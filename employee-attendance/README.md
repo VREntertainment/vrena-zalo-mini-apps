@@ -20,7 +20,7 @@ This Mini App is linked to the existing VRena HR tables. It verifies a Zalo user
 ## Build the Mini App
 
 ```bash
-cd mini-apps/employee-attendance
+cd employee-attendance
 cp .env.example .env.production
 npm install
 npm run build
