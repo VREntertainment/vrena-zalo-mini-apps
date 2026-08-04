@@ -1,12 +1,5 @@
 import { getAccessToken, getPhoneNumber, openWebview } from 'zmp-sdk'
 
-export const legalDocumentUrls = {
-  privacyPolicy: 'https://www.vre-vietnam.com/privacy-policy',
-  termsAndConditions: 'https://www.vre-vietnam.com/terms-and-conditions',
-} as const
-
-export type LegalDocument = keyof typeof legalDocumentUrls
-
 export type PlayerStatus = {
   linked: boolean
   displayName: string
@@ -14,7 +7,13 @@ export type PlayerStatus = {
   handoffUrl?: string
 }
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'https://vrena-booking.vercel.app').replace(/\/$/, '')
+const legacyApiBaseUrl = 'https://vrena-booking.vercel.app'
+const canonicalApiBaseUrl = 'https://booking.vre-vietnam.com'
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL || canonicalApiBaseUrl
+const apiBaseUrl = (configuredApiBaseUrl === legacyApiBaseUrl
+  ? canonicalApiBaseUrl
+  : configuredApiBaseUrl
+).replace(/\/$/, '')
 
 function previewState(): PlayerStatus | null {
   if (!import.meta.env.DEV) return null
@@ -51,14 +50,19 @@ async function apiRequest(
   const accessToken = await getAccessToken()
   if (!accessToken) throw new Error('Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
 
-  const response = await fetch(`${apiBaseUrl}/api/zalo/player-auth`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ action, ...options }),
-  })
+  let response: Response
+  try {
+    response = await fetch(`${apiBaseUrl}/api/zalo/player-auth`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action, ...options }),
+    })
+  } catch {
+    throw new Error('Không thể kết nối với VRena. Vui lòng kiểm tra mạng và thử lại.')
+  }
   const payload = await response.json().catch(() => null) as (PlayerStatus & { error?: string }) | null
 
   if (!response.ok || !payload) {
@@ -91,23 +95,6 @@ export async function openVrena(handoffUrl: string | undefined) {
 
   await openWebview({
     url: handoffUrl,
-    config: {
-      style: 'normal',
-      leftButton: 'back',
-    },
-  })
-}
-
-export async function openLegalDocument(document: LegalDocument) {
-  const url = legalDocumentUrls[document]
-
-  if (import.meta.env.DEV) {
-    window.location.assign(url)
-    return
-  }
-
-  await openWebview({
-    url,
     config: {
       style: 'normal',
       leftButton: 'back',
