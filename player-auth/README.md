@@ -43,9 +43,9 @@ zmp deploy --existing --testing --desc "Initial VRena Player phone account flow"
 ```
 
 Set `VITE_API_BASE_URL` only when targeting a booking backend other than
-`https://vrena-booking.vercel.app`.
+`https://booking.vre-vietnam.com`.
 
 Zalo version review also requires the booking backend webhook
-`https://vrena-booking.vercel.app/api/zalo/webhook`. Configure its
+`https://booking.vre-vietnam.com/api/zalo/webhook`. Configure its
 `ZALO_OPEN_API_KEY` server environment variable with the Open API key shown by
 Zalo after the Mini App review settings are complete.
