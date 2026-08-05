@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   continueWithZalo,
   loadPlayerStatus,
@@ -181,10 +181,10 @@ export default function App() {
   const [status, setStatus] = useState<PlayerStatus | null>(null)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [activeLegalDocument, setActiveLegalDocument] = useState<LegalDocument | null>(null)
-  const [busy, setBusy] = useState(true)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  const refresh = useCallback(async () => {
+  async function checkZaloSession() {
     setBusy(true)
     setError('')
     try {
@@ -194,15 +194,10 @@ export default function App() {
     } finally {
       setBusy(false)
     }
-  }, [])
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => void refresh(), 0)
-    return () => window.clearTimeout(timer)
-  }, [refresh])
+  }
 
   async function handleContinue() {
-    if (!status?.linked && !acceptedTerms) {
+    if (status && !status.linked && !acceptedTerms) {
       setError(
         'Vui lòng đồng ý cho VRena sử dụng số điện thoại Zalo của bạn và xác nhận Chính sách quyền riêng tư cùng Điều khoản sử dụng.',
       )
@@ -279,7 +274,7 @@ export default function App() {
               <span aria-hidden="true">→</span>
             </button>
           </>
-        ) : (
+        ) : status ? (
           <>
             <span className="eyebrow">TÀI KHOẢN VRENA</span>
             <h1>Chào mừng đến VRena</h1>
@@ -333,12 +328,37 @@ export default function App() {
               <span aria-hidden="true">→</span>
             </button>
           </>
-        )}
+        ) : (
+          <>
+            <span className="eyebrow">TÀI KHOẢN VRENA</span>
+            <h1>Chào mừng đến VRena</h1>
+            <p className="lead">
+              Kết nối tài khoản VRena của bạn bằng Zalo. Không cần email.
+            </p>
 
-        {!busy && !status && (
-          <button className="retry-button" type="button" onClick={() => void refresh()}>
-            Thử lại
-          </button>
+            <div className="benefit-row">
+              <span className="benefit-icon"><ShieldIcon /></span>
+              <div>
+                <strong>Bắt đầu an toàn</strong>
+                <p>
+                  Chọn Tiếp tục để kiểm tra phiên Zalo. VRena chỉ yêu cầu số điện
+                  thoại nếu bạn cần tạo tài khoản mới.
+                </p>
+              </div>
+            </div>
+
+            {error && <div className="message error-message" role="alert">{error}</div>}
+
+            <button
+              className="primary-button"
+              type="button"
+              disabled={busy}
+              onClick={() => void checkZaloSession()}
+            >
+              {error ? 'Thử lại' : 'Tiếp tục với Zalo'}
+              <span aria-hidden="true">→</span>
+            </button>
+          </>
         )}
       </section>
 

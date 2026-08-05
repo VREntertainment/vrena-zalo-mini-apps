@@ -14,6 +14,19 @@ const apiBaseUrl = (configuredApiBaseUrl === legacyApiBaseUrl
   ? canonicalApiBaseUrl
   : configuredApiBaseUrl
 ).replace(/\/$/, '')
+const ZALO_SDK_TIMEOUT_MS = 12_000
+const API_TIMEOUT_MS = 12_000
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string) {
+  let timeoutId: number | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error(message)), timeoutMs)
+  })
+
+  return Promise.race([promise, timeout]).finally(() => {
+    if (timeoutId !== undefined) window.clearTimeout(timeoutId)
+  })
+}
 
 function previewState(): PlayerStatus | null {
   if (!import.meta.env.DEV) return null
@@ -47,9 +60,15 @@ async function apiRequest(
         }
   }
 
-  const accessToken = await getAccessToken()
+  const accessToken = await withTimeout(
+    getAccessToken(),
+    ZALO_SDK_TIMEOUT_MS,
+    'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.',
+  )
   if (!accessToken) throw new Error('Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
 
+  const controller = new AbortController()
+  const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS)
   let response: Response
   try {
     response = await fetch(`${apiBaseUrl}/api/zalo/player-auth`, {
@@ -59,9 +78,16 @@ async function apiRequest(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ action, ...options }),
+      signal: controller.signal,
     })
   } catch {
-    throw new Error('Không thể kết nối với VRena. Vui lòng kiểm tra mạng và thử lại.')
+    throw new Error(
+      controller.signal.aborted
+        ? 'VRena phản hồi quá chậm. Vui lòng thử lại.'
+        : 'Không thể kết nối với VRena. Vui lòng kiểm tra mạng và thử lại.',
+    )
+  } finally {
+    window.clearTimeout(timeoutId)
   }
   const payload = await response.json().catch(() => null) as (PlayerStatus & { error?: string }) | null
 
@@ -79,7 +105,11 @@ export function loadPlayerStatus() {
 export async function continueWithZalo(linked: boolean, acceptedTerms: boolean) {
   let phoneToken: string | undefined
   if (!linked && !import.meta.env.DEV) {
-    const response = await getPhoneNumber()
+    const response = await withTimeout(
+      getPhoneNumber(),
+      ZALO_SDK_TIMEOUT_MS,
+      'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.',
+    )
     phoneToken = response.token
     if (!phoneToken) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
   }
