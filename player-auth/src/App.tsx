@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  continueWithZalo,
-  loadPlayerStatus,
-  openVrena,
+  registerPlayer,
   type PlayerStatus,
 } from './api'
 
@@ -14,24 +12,24 @@ const legalDocuments: Record<LegalDocument, {
   sections: Array<{ heading: string; body: string }>
 }> = {
   privacyPolicy: {
-    title: 'Chính sách quyền riêng tư',
-    updated: 'Cập nhật ngày 03/08/2026',
+    title: 'Chính sách quyền riêng tư VRena Player',
+    updated: 'Cập nhật ngày 10/08/2026',
     sections: [
       {
         heading: '1. Phạm vi',
-        body: 'Chính sách này giải thích cách CÔNG TY TNHH VR ENTERTAINMENT xử lý thông tin cá nhân khi người dùng tạo hoặc liên kết tài khoản VRena qua Mini App VRena Player.',
+        body: 'Chính sách này giải thích cách CÔNG TY TNHH VR ENTERTAINMENT xử lý thông tin cá nhân khi người dùng tự nguyện đăng ký một hồ sơ người chơi mới trong Mini App VRena Player.',
       },
       {
         heading: '2. Dữ liệu được xử lý',
-        body: 'Khi người dùng chủ động đồng ý, VRena nhận số điện thoại Zalo, mã người dùng Zalo và mã xác thực cần thiết để tạo hoặc liên kết tài khoản. Mã xác thực chỉ được xử lý trong quá trình xác minh. Mini App không yêu cầu vị trí, danh bạ, camera hoặc micro cho chức năng này.',
+        body: 'Khi người dùng chủ động chọn đăng ký và đồng ý cấp quyền, VRena nhận số điện thoại Zalo, mã người dùng Zalo và mã xác thực cần thiết để tạo hồ sơ mới. Mã xác thực chỉ được xử lý trong quá trình xác minh. Mini App không yêu cầu vị trí, danh bạ, camera hoặc micro.',
       },
       {
         heading: '3. Mục đích sử dụng',
-        body: 'Dữ liệu được dùng để tạo hoặc nhận diện tài khoản VRena, xác minh đăng nhập, duy trì an toàn tài khoản, phòng chống gian lận và hỗ trợ người dùng. Email không bắt buộc trong luồng này.',
+        body: 'Dữ liệu được dùng để tạo và nhận diện hồ sơ người chơi mới, bảo vệ hồ sơ, phòng chống gian lận và hỗ trợ người dùng. Email không bắt buộc trong luồng đăng ký này.',
       },
       {
         heading: '4. Sự đồng ý và lựa chọn',
-        body: 'Người dùng có thể từ chối cấp số điện thoại. Khi từ chối, chức năng tạo hoặc liên kết tài khoản bằng Zalo sẽ không hoạt động. Người dùng có thể rút lại sự đồng ý hoặc yêu cầu truy cập, chỉnh sửa hay xóa dữ liệu theo quy định áp dụng.',
+        body: 'Người dùng có thể xem thông tin và quyền lợi trong Mini App mà không cần đăng ký hoặc cấp số điện thoại. Khi từ chối, chỉ chức năng đăng ký hồ sơ mới không thực hiện. Người dùng có thể rút lại sự đồng ý hoặc yêu cầu truy cập, chỉnh sửa hay xóa dữ liệu theo quy định áp dụng.',
       },
       {
         heading: '5. Chia sẻ dữ liệu',
@@ -48,24 +46,24 @@ const legalDocuments: Record<LegalDocument, {
     ],
   },
   termsAndConditions: {
-    title: 'Điều khoản sử dụng',
-    updated: 'Cập nhật ngày 03/08/2026',
+    title: 'Điều khoản sử dụng VRena Player',
+    updated: 'Cập nhật ngày 10/08/2026',
     sections: [
       {
         heading: '1. Phạm vi',
-        body: 'VRena Player là Mini App của CÔNG TY TNHH VR ENTERTAINMENT, cho phép người dùng tạo hoặc liên kết tài khoản VRena bằng số điện thoại Zalo mà không bắt buộc email. Việc tiếp tục sử dụng Mini App đồng nghĩa người dùng chấp nhận các điều khoản này.',
+        body: 'VRena Player là Mini App của CÔNG TY TNHH VR ENTERTAINMENT. Người dùng có thể xem thông tin quyền lợi mà không cần đăng nhập. Nếu có nhu cầu, người dùng có thể tự nguyện đăng ký một hồ sơ người chơi mới bằng số điện thoại Zalo mà không bắt buộc email.',
       },
       {
         heading: '2. Quyền và dữ liệu được sử dụng',
-        body: 'Sau khi người dùng chủ động chọn Tiếp tục với Zalo, Mini App mới yêu cầu quyền truy cập số điện thoại. Nếu người dùng đồng ý, VRena xử lý số điện thoại, mã người dùng Zalo và mã xác thực cần thiết để tạo hoặc liên kết tài khoản và bảo vệ quá trình đăng nhập.',
+        body: 'Mini App chỉ yêu cầu quyền số điện thoại sau khi người dùng mở phần Đăng ký thành viên, đọc mục đích sử dụng dữ liệu, đồng ý với tài liệu này và chọn Đăng ký bằng số điện thoại Zalo. Nếu đồng ý, VRena xử lý số điện thoại, mã người dùng Zalo và mã xác thực để tạo hồ sơ mới.',
       },
       {
         heading: '3. Sự đồng ý của người dùng',
-        body: 'Người dùng có thể từ chối cấp số điện thoại. Việc từ chối chỉ làm chức năng tạo hoặc liên kết tài khoản bằng Zalo không hoạt động và không đồng nghĩa với việc chấp thuận bất kỳ mục đích nào khác.',
+        body: 'Người dùng có thể từ chối cấp số điện thoại và vẫn xem thông tin trong Mini App. Việc từ chối chỉ dừng đăng ký hồ sơ mới và không đồng nghĩa với việc chấp thuận bất kỳ mục đích nào khác.',
       },
       {
         heading: '4. Tài khoản người dùng',
-        body: 'Người dùng chịu trách nhiệm cung cấp thông tin chính xác, sử dụng tài khoản đúng pháp luật và thông báo cho VRena khi phát hiện truy cập trái phép. VRena có thể tạm ngừng tài khoản khi có dấu hiệu gian lận, vi phạm điều khoản hoặc rủi ro an ninh.',
+        body: 'Chức năng đăng ký trong Mini App chỉ tạo hồ sơ người chơi mới, không liên kết số điện thoại với tài khoản VRena có sẵn. Người đã có tài khoản VRena có thể liên hệ nhân viên tại địa điểm VRena để được hỗ trợ. Người dùng chịu trách nhiệm sử dụng hồ sơ đúng pháp luật và thông báo khi phát hiện truy cập trái phép.',
       },
       {
         heading: '5. Bảo mật và chia sẻ',
@@ -86,7 +84,7 @@ const legalDocuments: Record<LegalDocument, {
 function errorMessage(error: unknown) {
   return error instanceof Error
     ? error.message
-    : 'Không thể kết nối tài khoản VRena. Vui lòng thử lại.'
+    : 'Không thể đăng ký hồ sơ VRena. Vui lòng thử lại.'
 }
 
 function ShieldIcon() {
@@ -180,26 +178,20 @@ function LegalModal({
 export default function App() {
   const [status, setStatus] = useState<PlayerStatus | null>(null)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [registrationOpen, setRegistrationOpen] = useState(false)
   const [activeLegalDocument, setActiveLegalDocument] = useState<LegalDocument | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  async function checkZaloSession() {
-    setBusy(true)
+  function startRegistration() {
     setError('')
-    try {
-      setStatus(await loadPlayerStatus())
-    } catch (refreshError) {
-      setError(errorMessage(refreshError))
-    } finally {
-      setBusy(false)
-    }
+    setRegistrationOpen(true)
   }
 
-  async function handleContinue() {
-    if (status && !status.linked && !acceptedTerms) {
+  async function handleRegistration() {
+    if (!acceptedTerms) {
       setError(
-        'Vui lòng đồng ý cho VRena sử dụng số điện thoại Zalo của bạn và xác nhận Chính sách quyền riêng tư cùng Điều khoản sử dụng.',
+        'Vui lòng xác nhận Chính sách quyền riêng tư và Điều khoản sử dụng trước khi đăng ký.',
       )
       return
     }
@@ -207,11 +199,11 @@ export default function App() {
     setBusy(true)
     setError('')
     try {
-      const nextStatus = await continueWithZalo(Boolean(status?.linked), acceptedTerms)
+      const nextStatus = await registerPlayer(acceptedTerms)
       setStatus(nextStatus)
-      await openVrena(nextStatus.handoffUrl)
-    } catch (continueError) {
-      setError(errorMessage(continueError))
+      setRegistrationOpen(false)
+    } catch (registrationError) {
+      setError(errorMessage(registrationError))
     } finally {
       setBusy(false)
     }
@@ -246,49 +238,57 @@ export default function App() {
       </section>
 
       <section className="content-card">
-        {busy && !status ? (
-          <div className="loading-state" aria-live="polite">
-            <span className="spinner" />
-            <h1>Đang kết nối với Zalo…</h1>
-            <p>VRena đang kiểm tra phiên đăng nhập an toàn của bạn.</p>
-          </div>
-        ) : status?.linked ? (
+        {status?.registered ? (
           <>
-            <span className="eyebrow">TÀI KHOẢN ĐÃ XÁC MINH</span>
-            <h1>Xin chào, {status.displayName || 'Người chơi'}</h1>
-            <p className="lead">Tài khoản VRena của bạn đã sẵn sàng.</p>
+            <span className="eyebrow">THÀNH VIÊN VRENA</span>
+            <h1>Hồ sơ đã sẵn sàng</h1>
+            <p className="lead">
+              Xin chào {status.displayName || 'Người chơi'}. Hồ sơ thành viên của
+              bạn đã được nhận diện an toàn trong VRena Player.
+            </p>
 
             <div className="phone-row">
               <span className="phone-icon"><PhoneIcon /></span>
               <div>
-                <small>Số điện thoại Zalo</small>
+                <small>Số điện thoại thành viên</small>
                 <strong>{status.maskedPhone}</strong>
               </div>
               <span className="check-icon"><ShieldIcon /></span>
             </div>
 
-            {error && <div className="message error-message" role="alert">{error}</div>}
+            <div className="member-note">
+              <strong>Quyền lợi hồ sơ</strong>
+              <p>
+                Hồ sơ giúp VRena nhận diện thành viên và bảo vệ lịch sử hoạt động
+                khi bạn sử dụng dịch vụ tại địa điểm VRena.
+              </p>
+            </div>
 
-            <button className="primary-button" type="button" disabled={busy} onClick={() => void handleContinue()}>
-              {busy ? 'Đang mở VRena…' : 'Mở VRena'}
-              <span aria-hidden="true">→</span>
-            </button>
+            <div className="legal-links" aria-label="Tài liệu pháp lý">
+              <button type="button" onClick={() => openLegalDocument('privacyPolicy')}>
+                Chính sách quyền riêng tư
+              </button>
+              <button type="button" onClick={() => openLegalDocument('termsAndConditions')}>
+                Điều khoản sử dụng
+              </button>
+            </div>
           </>
-        ) : status ? (
+        ) : registrationOpen ? (
           <>
-            <span className="eyebrow">TÀI KHOẢN VRENA</span>
-            <h1>Chào mừng đến VRena</h1>
+            <span className="eyebrow">ĐĂNG KÝ HỒ SƠ MỚI</span>
+            <h1>Đăng ký thành viên</h1>
             <p className="lead">
-              Dùng số điện thoại Zalo để tạo hồ sơ VRena. Không cần email.
+              Chỉ dành cho người chưa có tài khoản VRena. Mini App không dùng
+              chức năng này để liên kết tài khoản có sẵn.
             </p>
 
             <div className="benefit-row">
               <span className="benefit-icon"><PhoneIcon /></span>
               <div>
-                <strong>Dữ liệu được sử dụng</strong>
+                <strong>Vì sao cần số điện thoại?</strong>
                 <p>
-                  VRena nhận số điện thoại Zalo để tạo, bảo vệ và nhận diện tài khoản.
-                  Email không bắt buộc.
+                  VRena dùng số điện thoại Zalo để tạo, bảo vệ và nhận diện hồ sơ
+                  thành viên mới. Email không bắt buộc.
                 </p>
               </div>
             </div>
@@ -300,8 +300,8 @@ export default function App() {
                 onChange={(event) => setAcceptedTerms(event.target.checked)}
               />
               <span>
-                Tôi đồng ý cho VRena nhận và sử dụng số điện thoại Zalo của tôi cho
-                mục đích nêu trên. Tôi đã đọc và đồng ý với{' '}
+                Tôi tự nguyện đăng ký hồ sơ mới và đồng ý cho VRena nhận, sử dụng
+                số điện thoại Zalo cho mục đích nêu trên. Tôi đã đọc{' '}
                 <button
                   className="legal-inline-button"
                   onClick={() => openLegalDocument('privacyPolicy')}
@@ -309,7 +309,7 @@ export default function App() {
                 >
                   Chính sách quyền riêng tư
                 </button>{' '}
-                và{' '}
+                và đồng ý với{' '}
                 <button
                   className="legal-inline-button"
                   onClick={() => openLegalDocument('termsAndConditions')}
@@ -323,26 +323,51 @@ export default function App() {
 
             {error && <div className="message error-message" role="alert">{error}</div>}
 
-            <button className="primary-button" type="button" disabled={busy} onClick={() => void handleContinue()}>
-              {busy ? 'Đang xác minh…' : 'Tiếp tục với Zalo'}
+            <button className="primary-button" type="button" disabled={busy} onClick={() => void handleRegistration()}>
+              {busy ? 'Đang đăng ký…' : 'Đăng ký bằng số điện thoại Zalo'}
               <span aria-hidden="true">→</span>
+            </button>
+
+            <button
+              className="secondary-button"
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setRegistrationOpen(false)
+                setAcceptedTerms(false)
+                setError('')
+              }}
+            >
+              Để sau, tiếp tục xem thông tin
             </button>
           </>
         ) : (
           <>
-            <span className="eyebrow">TÀI KHOẢN VRENA</span>
-            <h1>Chào mừng đến VRena</h1>
+            <span className="eyebrow">VRENA PLAYER</span>
+            <h1>Hồ sơ người chơi VRena</h1>
             <p className="lead">
-              Kết nối tài khoản VRena của bạn bằng Zalo. Không cần email.
+              Khám phá quyền lợi hồ sơ thành viên. Bạn có thể xem thông tin trong
+              Mini App mà không cần đăng nhập hoặc cấp số điện thoại.
             </p>
 
             <div className="benefit-row">
+              <span className="benefit-icon"><PhoneIcon /></span>
+              <div>
+                <strong>Nhận diện thành viên</strong>
+                <p>
+                  Một hồ sơ thống nhất giúp VRena nhận diện bạn khi tham gia hoạt
+                  động tại địa điểm VRena.
+                </p>
+              </div>
+            </div>
+
+            <div className="benefit-row benefit-row-secondary">
               <span className="benefit-icon"><ShieldIcon /></span>
               <div>
-                <strong>Bắt đầu an toàn</strong>
+                <strong>Đăng ký có lựa chọn</strong>
                 <p>
-                  Chọn Tiếp tục để kiểm tra phiên Zalo. VRena chỉ yêu cầu số điện
-                  thoại nếu bạn cần tạo tài khoản mới.
+                  Quyền số điện thoại chỉ được hỏi sau khi bạn chủ động mở phần
+                  đăng ký hồ sơ mới và xác nhận đồng ý.
                 </p>
               </div>
             </div>
@@ -353,18 +378,32 @@ export default function App() {
               className="primary-button"
               type="button"
               disabled={busy}
-              onClick={() => void checkZaloSession()}
+              onClick={startRegistration}
             >
-              {error ? 'Thử lại' : 'Tiếp tục với Zalo'}
+              Đăng ký thành viên VRena
               <span aria-hidden="true">→</span>
             </button>
+
+            <p className="registration-disclaimer">
+              Dành cho hồ sơ mới. Từ chối đăng ký không làm gián đoạn nội dung
+              khác của Mini App.
+            </p>
+
+            <div className="legal-links" aria-label="Tài liệu pháp lý">
+              <button type="button" onClick={() => openLegalDocument('privacyPolicy')}>
+                Chính sách quyền riêng tư
+              </button>
+              <button type="button" onClick={() => openLegalDocument('termsAndConditions')}>
+                Điều khoản sử dụng
+              </button>
+            </div>
           </>
         )}
       </section>
 
       <footer>
         <ShieldIcon />
-        <span>Kết nối được mã hóa · Tài khoản VRena vĩnh viễn</span>
+        <span>Dữ liệu được bảo vệ · Không quảng cáo · Không điều hướng ra ngoài</span>
       </footer>
 
       {activeLegalDocument ? (
