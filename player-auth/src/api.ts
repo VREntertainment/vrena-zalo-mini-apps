@@ -1,10 +1,9 @@
-import { getAccessToken, getPhoneNumber, openWebview } from 'zmp-sdk'
+import { authorize, getAccessToken, getPhoneNumber, getSetting } from 'zmp-sdk'
 
 export type PlayerStatus = {
-  linked: boolean
+  registered: boolean
   displayName: string
   maskedPhone: string | null
-  handoffUrl?: string
 }
 
 const legacyApiBaseUrl = 'https://vrena-booking.vercel.app'
@@ -30,22 +29,22 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string)
 
 function previewState(): PlayerStatus | null {
   if (!import.meta.env.DEV) return null
-  const linked = new URLSearchParams(window.location.search).get('preview') === 'linked'
-  return linked
+  const registered = new URLSearchParams(window.location.search).get('preview') === 'registered'
+  return registered
     ? {
-        linked: true,
+        registered: true,
         displayName: 'Người chơi',
         maskedPhone: '+84 ••• ••• 789',
       }
     : {
-        linked: false,
+        registered: false,
         displayName: 'Người chơi',
         maskedPhone: null,
       }
 }
 
 async function apiRequest(
-  action: 'status' | 'continue',
+  action: 'status' | 'register',
   options: { phoneToken?: string; acceptedTerms?: boolean } = {},
 ) {
   const preview = previewState()
@@ -54,7 +53,7 @@ async function apiRequest(
     return action === 'status'
       ? preview
       : {
-          linked: true,
+          registered: true,
           displayName: preview.displayName,
           maskedPhone: preview.maskedPhone || '+84 ••• ••• 789',
         }
@@ -92,7 +91,7 @@ async function apiRequest(
   const payload = await response.json().catch(() => null) as (PlayerStatus & { error?: string }) | null
 
   if (!response.ok || !payload) {
-    throw new Error(payload?.error || 'Không thể kết nối tài khoản VRena.')
+    throw new Error(payload?.error || 'Không thể kết nối dịch vụ đăng ký VRena.')
   }
 
   return payload
@@ -102,32 +101,42 @@ export function loadPlayerStatus() {
   return apiRequest('status')
 }
 
-export async function continueWithZalo(linked: boolean, acceptedTerms: boolean) {
-  let phoneToken: string | undefined
-  if (!linked && !import.meta.env.DEV) {
+async function requestPhoneToken() {
+  try {
+    const { authSetting } = await withTimeout(
+      getSetting(),
+      ZALO_SDK_TIMEOUT_MS,
+      'Zalo chưa phản hồi trạng thái quyền. Vui lòng thử lại.',
+    )
+    if (!authSetting['scope.userPhonenumber']) {
+      const granted = await withTimeout(
+        authorize({ scopes: ['scope.userPhonenumber'] }),
+        ZALO_SDK_TIMEOUT_MS,
+        'Zalo chưa phản hồi yêu cầu quyền số điện thoại. Vui lòng thử lại.',
+      )
+      if (!granted['scope.userPhonenumber']) {
+        throw new Error('Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
+      }
+    }
+
     const response = await withTimeout(
       getPhoneNumber(),
       ZALO_SDK_TIMEOUT_MS,
       'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.',
     )
-    phoneToken = response.token
-    if (!phoneToken) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
+    if (!response.token) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
+    return response.token
+  } catch (error) {
+    if (error instanceof Error && error.message.startsWith('Zalo chưa phản hồi')) throw error
+    if (error instanceof Error && error.message.startsWith('Bạn chưa cấp quyền')) throw error
+    throw new Error('Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
   }
-
-  return apiRequest('continue', { phoneToken, acceptedTerms })
 }
 
-export async function openVrena(handoffUrl: string | undefined) {
-  if (!handoffUrl) {
-    if (import.meta.env.DEV) return
-    throw new Error('VRena chưa tạo được liên kết đăng nhập an toàn.')
-  }
+export async function registerPlayer(acceptedTerms: boolean) {
+  const currentStatus = await loadPlayerStatus()
+  if (currentStatus.registered) return currentStatus
 
-  await openWebview({
-    url: handoffUrl,
-    config: {
-      style: 'normal',
-      leftButton: 'back',
-    },
-  })
+  const phoneToken = import.meta.env.DEV ? undefined : await requestPhoneToken()
+  return apiRequest('register', { phoneToken, acceptedTerms })
 }
