@@ -18,8 +18,9 @@ App `VRena Attendance` (`675490363839227109`).
    the current phone permission with `getSetting` and requests
    `scope.userPhonenumber` in context. It does not call the account-status API
    before this authorization step.
-5. The Mini App then obtains the Zalo access token and app-scoped user ID and
-   sends them with the one-time phone token to `/api/zalo/player-auth`.
+5. The Mini App then obtains the current Zalo access token and app-scoped user
+   ID before requesting the one-time phone token, and sends that exact session
+   pair to `/api/zalo/player-auth`.
 6. The server first decodes the one-time phone token with `ZALO_APP_SECRET`,
    verifies the access token with the mandatory `appsecret_proof`, confirms the
    server-verified user ID matches the Mini App user ID, and creates a normal
