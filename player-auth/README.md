@@ -12,15 +12,19 @@ App `VRena Attendance` (`675490363839227109`).
 
 1. The initial screen is available without login or personal-data permission.
 2. A user who wants a new profile selects `Đăng ký thành viên VRena`.
-3. The Mini App checks whether the Zalo user already has a VRena profile by
-   sending the current Zalo access token to `/api/zalo/player-auth`.
-4. Only for a new registration, the Mini App explains the purpose, collects
-   legal consent, checks the current phone permission with `getSetting`, and
-   requests `scope.userPhonenumber` in context.
-5. The server verifies the Zalo access token with the mandatory
-   `appsecret_proof`, decodes the one-time phone token with `ZALO_APP_SECRET`,
-   and creates a normal Supabase Auth user plus a VRena profile.
-6. The completed profile is displayed inside the Mini App. The Mini App does
+3. The Mini App explains the purpose and collects legal consent before making
+   any permission request.
+4. After the user selects `Đăng ký bằng số điện thoại Zalo`, the Mini App checks
+   the current phone permission with `getSetting` and requests
+   `scope.userPhonenumber` in context. It does not call the account-status API
+   before this authorization step.
+5. The Mini App then obtains the Zalo access token and app-scoped user ID and
+   sends them with the one-time phone token to `/api/zalo/player-auth`.
+6. The server first decodes the one-time phone token with `ZALO_APP_SECRET`,
+   verifies the access token with the mandatory `appsecret_proof`, confirms the
+   server-verified user ID matches the Mini App user ID, and creates a normal
+   Supabase Auth user plus a VRena profile.
+7. The completed profile is displayed inside the Mini App. The Mini App does
    not navigate to an external web app and does not link an existing
    traditionally authenticated account.
 
