@@ -16,6 +16,11 @@ const apiBaseUrl = (configuredApiBaseUrl === legacyApiBaseUrl
 const ZALO_SDK_TIMEOUT_MS = 12_000
 const API_TIMEOUT_MS = 12_000
 
+type ZaloSession = {
+  accessToken: string
+  zaloUserId: string
+}
+
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string) {
   let timeoutId: number | undefined
   const timeout = new Promise<never>((_, reject) => {
@@ -43,22 +48,7 @@ function previewState(): PlayerStatus | null {
       }
 }
 
-async function apiRequest(
-  action: 'status' | 'register',
-  options: { phoneToken?: string; acceptedTerms?: boolean } = {},
-) {
-  const preview = previewState()
-  if (preview) {
-    await new Promise((resolve) => window.setTimeout(resolve, 350))
-    return action === 'status'
-      ? preview
-      : {
-          registered: true,
-          displayName: preview.displayName,
-          maskedPhone: preview.maskedPhone || '+84 ••• ••• 789',
-        }
-  }
-
+async function getZaloSession(): Promise<ZaloSession> {
   const [accessToken, zaloUserId] = await Promise.all([
     withTimeout(
       getAccessToken(),
@@ -73,6 +63,28 @@ async function apiRequest(
   ])
   if (!accessToken) throw new Error('Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
   if (!zaloUserId) throw new Error('Không thể xác định người dùng Zalo. Vui lòng mở lại Mini App.')
+
+  return { accessToken, zaloUserId }
+}
+
+async function apiRequest(
+  action: 'status' | 'register',
+  options: { phoneToken?: string; acceptedTerms?: boolean } = {},
+  suppliedSession?: ZaloSession,
+) {
+  const preview = previewState()
+  if (preview) {
+    await new Promise((resolve) => window.setTimeout(resolve, 350))
+    return action === 'status'
+      ? preview
+      : {
+          registered: true,
+          displayName: preview.displayName,
+          maskedPhone: preview.maskedPhone || '+84 ••• ••• 789',
+        }
+  }
+
+  const { accessToken, zaloUserId } = suppliedSession || await getZaloSession()
 
   const controller = new AbortController()
   const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS)
@@ -109,7 +121,7 @@ export function loadPlayerStatus() {
   return apiRequest('status')
 }
 
-async function requestPhoneToken() {
+async function ensurePhonePermission() {
   try {
     const { authSetting } = await withTimeout(
       getSetting(),
@@ -126,14 +138,6 @@ async function requestPhoneToken() {
         throw new Error('Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
       }
     }
-
-    const response = await withTimeout(
-      getPhoneNumber(),
-      ZALO_SDK_TIMEOUT_MS,
-      'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.',
-    )
-    if (!response.token) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
-    return response.token
   } catch (error) {
     if (error instanceof Error && error.message.startsWith('Zalo chưa phản hồi')) throw error
     if (error instanceof Error && error.message.startsWith('Bạn chưa cấp quyền')) throw error
@@ -141,10 +145,24 @@ async function requestPhoneToken() {
   }
 }
 
+async function requestPhoneToken() {
+  const response = await withTimeout(
+    getPhoneNumber(),
+    ZALO_SDK_TIMEOUT_MS,
+    'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.',
+  )
+  if (!response.token) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
+  return response.token
+}
+
 export async function registerPlayer(acceptedTerms: boolean) {
-  // Registration must begin with the user-requested phone permission. Calling
-  // the account-status API first asks Zalo to validate an access token before
-  // this Mini App has completed its own authorization step.
-  const phoneToken = import.meta.env.DEV ? undefined : await requestPhoneToken()
-  return apiRequest('register', { phoneToken, acceptedTerms })
+  if (import.meta.env.DEV) return apiRequest('register', { acceptedTerms })
+
+  await ensurePhonePermission()
+  // Zalo's server-side phone API requires the one-time phone code and the
+  // access token from the same active Mini App session. Capture the access
+  // token immediately before requesting the code, then reuse that exact pair.
+  const session = await getZaloSession()
+  const phoneToken = await requestPhoneToken()
+  return apiRequest('register', { phoneToken, acceptedTerms }, session)
 }
