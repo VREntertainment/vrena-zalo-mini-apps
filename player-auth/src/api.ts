@@ -1,4 +1,4 @@
-import { authorize, getAccessToken, getPhoneNumber, getSetting } from 'zmp-sdk'
+import { authorize, getAccessToken, getPhoneNumber, getSetting, getUserID } from 'zmp-sdk'
 
 export type PlayerStatus = {
   registered: boolean
@@ -59,12 +59,20 @@ async function apiRequest(
         }
   }
 
-  const accessToken = await withTimeout(
-    getAccessToken(),
-    ZALO_SDK_TIMEOUT_MS,
-    'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.',
-  )
+  const [accessToken, zaloUserId] = await Promise.all([
+    withTimeout(
+      getAccessToken(),
+      ZALO_SDK_TIMEOUT_MS,
+      'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.',
+    ),
+    withTimeout(
+      getUserID(),
+      ZALO_SDK_TIMEOUT_MS,
+      'Zalo chưa phản hồi thông tin người dùng. Vui lòng đóng và mở lại Mini App.',
+    ),
+  ])
   if (!accessToken) throw new Error('Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
+  if (!zaloUserId) throw new Error('Không thể xác định người dùng Zalo. Vui lòng mở lại Mini App.')
 
   const controller = new AbortController()
   const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS)
@@ -76,7 +84,7 @@ async function apiRequest(
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ action, ...options }),
+      body: JSON.stringify({ action, zaloUserId, ...options }),
       signal: controller.signal,
     })
   } catch {
@@ -134,9 +142,9 @@ async function requestPhoneToken() {
 }
 
 export async function registerPlayer(acceptedTerms: boolean) {
-  const currentStatus = await loadPlayerStatus()
-  if (currentStatus.registered) return currentStatus
-
+  // Registration must begin with the user-requested phone permission. Calling
+  // the account-status API first asks Zalo to validate an access token before
+  // this Mini App has completed its own authorization step.
   const phoneToken = import.meta.env.DEV ? undefined : await requestPhoneToken()
   return apiRequest('register', { phoneToken, acceptedTerms })
 }
