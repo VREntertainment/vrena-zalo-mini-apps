@@ -34,6 +34,25 @@ The Mini App never receives either credential. Existing VRena accounts are not
 silently taken over based only on a matching phone number; staff support is
 required for an existing-account case.
 
+## Languages
+
+The header language selector covers the same seven languages as the VRena web
+app: English, Vietnamese, Korean, Japanese, French, German and Italian. The
+selection is saved under `vrena-language`, and changes the registration flow,
+errors, completed profile, Privacy Policy and Terms of Use without navigating
+away from the Mini App.
+
+## Zalo phone-decoding infrastructure
+
+Zalo restricts personal-user-data responses, including decoded phone numbers,
+to backend requests whose public egress IP is located in Vietnam. The production
+`/api/zalo/player-auth` route must therefore decode the one-time phone token
+through Vietnam-origin infrastructure. A deployment running only from Vercel's
+US region cannot complete phone registration and receives Zalo error `-501`.
+
+Keep `ZALO_APP_SECRET` server-side. Do not move phone-token decoding into the
+Mini App to bypass this restriction.
+
 ## Local preview
 
 ```bash
