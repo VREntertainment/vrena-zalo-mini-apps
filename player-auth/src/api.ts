@@ -6,6 +6,30 @@ export type PlayerStatus = {
   maskedPhone: string | null
 }
 
+export type PlayerAuthErrorCode =
+  | 'zaloTimeout'
+  | 'sessionUnavailable'
+  | 'serverTimeout'
+  | 'networkUnavailable'
+  | 'serviceUnavailable'
+  | 'permissionTimeout'
+  | 'permissionDenied'
+  | 'phoneTimeout'
+  | 'phoneVerificationUnavailable'
+  | 'tooManyAttempts'
+  | 'existingAccount'
+  | 'identityMismatch'
+  | 'revokedAccount'
+  | 'consentRequired'
+  | 'unknown'
+
+export class PlayerAuthError extends Error {
+  constructor(readonly code: PlayerAuthErrorCode, fallbackMessage: string) {
+    super(fallbackMessage)
+    this.name = 'PlayerAuthError'
+  }
+}
+
 const legacyApiBaseUrl = 'https://vrena-booking.vercel.app'
 const canonicalApiBaseUrl = 'https://booking.vre-vietnam.com'
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL || canonicalApiBaseUrl
@@ -21,15 +45,35 @@ type ZaloSession = {
   zaloUserId: string
 }
 
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string) {
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, timeoutError: string | Error) {
   let timeoutId: number | undefined
   const timeout = new Promise<never>((_, reject) => {
-    timeoutId = window.setTimeout(() => reject(new Error(message)), timeoutMs)
+    timeoutId = window.setTimeout(
+      () => reject(typeof timeoutError === 'string' ? new Error(timeoutError) : timeoutError),
+      timeoutMs,
+    )
   })
 
   return Promise.race([promise, timeout]).finally(() => {
     if (timeoutId !== undefined) window.clearTimeout(timeoutId)
   })
+}
+
+function authError(code: PlayerAuthErrorCode, fallbackMessage: string) {
+  return new PlayerAuthError(code, fallbackMessage)
+}
+
+function serverErrorCode(message: string): PlayerAuthErrorCode {
+  const normalized = message.toLocaleLowerCase('vi')
+  if (normalized.includes('quá nhiều lần')) return 'tooManyAttempts'
+  if (normalized.includes('đã có hồ sơ') || normalized.includes('đã được dùng')) return 'existingAccount'
+  if (normalized.includes('không khớp')) return 'identityMismatch'
+  if (normalized.includes('đã bị thu hồi')) return 'revokedAccount'
+  if (normalized.includes('phiên zalo')) return 'sessionUnavailable'
+  if (normalized.includes('xác minh số điện thoại') || normalized.includes('cấp quyền số điện thoại')) {
+    return 'phoneVerificationUnavailable'
+  }
+  return 'serviceUnavailable'
 }
 
 function previewState(): PlayerStatus | null {
@@ -53,16 +97,16 @@ async function getZaloSession(): Promise<ZaloSession> {
     withTimeout(
       getAccessToken(),
       ZALO_SDK_TIMEOUT_MS,
-      'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.',
+      authError('zaloTimeout', 'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.'),
     ),
     withTimeout(
       getUserID(),
       ZALO_SDK_TIMEOUT_MS,
-      'Zalo chưa phản hồi thông tin người dùng. Vui lòng đóng và mở lại Mini App.',
+      authError('zaloTimeout', 'Zalo chưa phản hồi thông tin người dùng. Vui lòng đóng và mở lại Mini App.'),
     ),
   ])
-  if (!accessToken) throw new Error('Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
-  if (!zaloUserId) throw new Error('Không thể xác định người dùng Zalo. Vui lòng mở lại Mini App.')
+  if (!accessToken) throw authError('sessionUnavailable', 'Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.')
+  if (!zaloUserId) throw authError('sessionUnavailable', 'Không thể xác định người dùng Zalo. Vui lòng mở lại Mini App.')
 
   return { accessToken, zaloUserId }
 }
@@ -100,7 +144,10 @@ async function apiRequest(
       signal: controller.signal,
     })
   } catch {
-    throw new Error(
+    throw authError(
+      controller.signal.aborted
+        ? 'serverTimeout'
+        : 'networkUnavailable',
       controller.signal.aborted
         ? 'VRena phản hồi quá chậm. Vui lòng thử lại.'
         : 'Không thể kết nối với VRena. Vui lòng kiểm tra mạng và thử lại.',
@@ -111,7 +158,8 @@ async function apiRequest(
   const payload = await response.json().catch(() => null) as (PlayerStatus & { error?: string }) | null
 
   if (!response.ok || !payload) {
-    throw new Error(payload?.error || 'Không thể kết nối dịch vụ đăng ký VRena.')
+    const message = payload?.error || 'Không thể kết nối dịch vụ đăng ký VRena.'
+    throw authError(serverErrorCode(message), message)
   }
 
   return payload
@@ -126,22 +174,21 @@ async function ensurePhonePermission() {
     const { authSetting } = await withTimeout(
       getSetting(),
       ZALO_SDK_TIMEOUT_MS,
-      'Zalo chưa phản hồi trạng thái quyền. Vui lòng thử lại.',
+      authError('permissionTimeout', 'Zalo chưa phản hồi trạng thái quyền. Vui lòng thử lại.'),
     )
     if (!authSetting['scope.userPhonenumber']) {
       const granted = await withTimeout(
         authorize({ scopes: ['scope.userPhonenumber'] }),
         ZALO_SDK_TIMEOUT_MS,
-        'Zalo chưa phản hồi yêu cầu quyền số điện thoại. Vui lòng thử lại.',
+        authError('permissionTimeout', 'Zalo chưa phản hồi yêu cầu quyền số điện thoại. Vui lòng thử lại.'),
       )
       if (!granted['scope.userPhonenumber']) {
-        throw new Error('Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
+        throw authError('permissionDenied', 'Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
       }
     }
   } catch (error) {
-    if (error instanceof Error && error.message.startsWith('Zalo chưa phản hồi')) throw error
-    if (error instanceof Error && error.message.startsWith('Bạn chưa cấp quyền')) throw error
-    throw new Error('Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
+    if (error instanceof PlayerAuthError) throw error
+    throw authError('permissionDenied', 'Bạn chưa cấp quyền số điện thoại. Bạn vẫn có thể xem thông tin trong Mini App.')
   }
 }
 
@@ -149,9 +196,9 @@ async function requestPhoneToken() {
   const response = await withTimeout(
     getPhoneNumber(),
     ZALO_SDK_TIMEOUT_MS,
-    'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.',
+    authError('phoneTimeout', 'Zalo chưa phản hồi yêu cầu số điện thoại. Vui lòng thử lại.'),
   )
-  if (!response.token) throw new Error('Zalo không trả về mã xác minh số điện thoại.')
+  if (!response.token) throw authError('phoneVerificationUnavailable', 'Zalo không trả về mã xác minh số điện thoại.')
   return response.token
 }
 
