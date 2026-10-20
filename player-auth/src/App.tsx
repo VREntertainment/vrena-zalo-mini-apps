@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  loadPlayerStatus,
   PlayerAuthError,
   registerPlayer,
   type PlayerAuthErrorCode,
@@ -24,14 +25,6 @@ function ShieldIcon() {
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 3 5.5 5.6v5.9c0 4.1 2.6 7.8 6.5 9.5 3.9-1.7 6.5-5.4 6.5-9.5V5.6L12 3Z" />
       <path d="m9.2 12 1.8 1.8 3.9-4" />
-    </svg>
-  )
-}
-
-function PhoneIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M7.3 3.8 5.1 5.1c-1.2.7-.7 4.2 1.5 8 2.2 3.8 5 6.4 6.2 5.7l2.2-1.3c.8-.4.9-1.4.4-2.1l-1.7-2.2c-.4-.6-1.2-.7-1.8-.4l-.9.5c-.6-.5-1.2-1.2-1.7-2.1-.5-.8-.8-1.7-1-2.4l.9-.5c.6-.3.9-1.1.6-1.8L8.9 4.4c-.3-.8-1-1-1.6-.6Z" />
     </svg>
   )
 }
@@ -116,6 +109,25 @@ export default function App() {
     storeLanguage(language)
   }, [language])
 
+  useEffect(() => {
+    let active = true
+    setBusy(true)
+    loadPlayerStatus()
+      .then((nextStatus) => {
+        if (active && nextStatus.registered) setStatus(nextStatus)
+      })
+      .catch((statusError) => {
+        if (active) setActiveErrorCode(errorCode(statusError))
+      })
+      .finally(() => {
+        if (active) setBusy(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
   function startRegistration() {
     setActiveErrorCode(null)
     setRegistrationOpen(true)
@@ -180,8 +192,8 @@ export default function App() {
             <h1>{copy.readyTitle}</h1>
             <p className="lead">{copy.readyGreeting.replace('{name}', status.displayName || copy.defaultPlayer)}</p>
             <div className="phone-row">
-              <span className="phone-icon"><PhoneIcon /></span>
-              <div><small>{copy.memberPhone}</small><strong>{status.maskedPhone}</strong></div>
+              <span className="phone-icon"><ShieldIcon /></span>
+              <div><small>{copy.memberPhone}</small><strong>Zalo Mini App</strong></div>
               <span className="check-icon"><ShieldIcon /></span>
             </div>
             <div className="member-note"><strong>{copy.profileBenefits}</strong><p>{copy.profileBenefitsBody}</p></div>
@@ -196,7 +208,7 @@ export default function App() {
             <h1>{copy.registerTitle}</h1>
             <p className="lead">{copy.registerIntro}</p>
             <div className="benefit-row">
-              <span className="benefit-icon"><PhoneIcon /></span>
+              <span className="benefit-icon"><ShieldIcon /></span>
               <div><strong>{copy.phoneWhy}</strong><p>{copy.phoneWhyBody}</p></div>
             </div>
             <label className="consent-row">
@@ -232,7 +244,7 @@ export default function App() {
             <h1>{copy.welcomeTitle}</h1>
             <p className="lead">{copy.welcomeBody}</p>
             <div className="benefit-row">
-              <span className="benefit-icon"><PhoneIcon /></span>
+              <span className="benefit-icon"><ShieldIcon /></span>
               <div><strong>{copy.identifyTitle}</strong><p>{copy.identifyBody}</p></div>
             </div>
             <div className="benefit-row benefit-row-secondary">
