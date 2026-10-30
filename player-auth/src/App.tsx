@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  loadPlayerStatus,
-  PlayerAuthError,
-  registerPlayer,
-  type PlayerAuthErrorCode,
-  type PlayerStatus,
-} from './api'
-import {
   getInitialLanguage,
   languageChoices,
   storeLanguage,
@@ -15,10 +8,6 @@ import {
   type LegalDocument,
   type PlayerCopy,
 } from './i18n'
-
-function errorCode(error: unknown): PlayerAuthErrorCode {
-  return error instanceof PlayerAuthError ? error.code : 'unknown'
-}
 
 function ShieldIcon() {
   return (
@@ -96,12 +85,8 @@ function LegalModal({
 
 export default function App() {
   const [language, setLanguage] = useState<LanguageCode>(getInitialLanguage)
-  const [status, setStatus] = useState<PlayerStatus | null>(null)
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const [registrationOpen, setRegistrationOpen] = useState(false)
+  const [guideOpen, setGuideOpen] = useState(false)
   const [activeLegalDocument, setActiveLegalDocument] = useState<LegalDocument | null>(null)
-  const [busy, setBusy] = useState(false)
-  const [activeErrorCode, setActiveErrorCode] = useState<PlayerAuthErrorCode | null>(null)
   const copy = translations[language]
 
   useEffect(() => {
@@ -109,56 +94,12 @@ export default function App() {
     storeLanguage(language)
   }, [language])
 
-  useEffect(() => {
-    let active = true
-    setBusy(true)
-    loadPlayerStatus()
-      .then((nextStatus) => {
-        if (active && nextStatus.registered) setStatus(nextStatus)
-      })
-      .catch((statusError) => {
-        if (active) setActiveErrorCode(errorCode(statusError))
-      })
-      .finally(() => {
-        if (active) setBusy(false)
-      })
-
-    return () => {
-      active = false
-    }
-  }, [])
-
-  function startRegistration() {
-    setActiveErrorCode(null)
-    setRegistrationOpen(true)
-  }
-
-  async function handleRegistration() {
-    if (!acceptedTerms) {
-      setActiveErrorCode('consentRequired')
-      return
-    }
-
-    setBusy(true)
-    setActiveErrorCode(null)
-    try {
-      const nextStatus = await registerPlayer(acceptedTerms)
-      setStatus(nextStatus)
-      setRegistrationOpen(false)
-    } catch (registrationError) {
-      setActiveErrorCode(errorCode(registrationError))
-    } finally {
-      setBusy(false)
-    }
-  }
-
   function openLegalDocument(document: LegalDocument) {
-    setActiveErrorCode(null)
     setActiveLegalDocument(document)
   }
 
   return (
-    <main className="player-app" aria-busy={busy}>
+    <main className="player-app">
       <div className="brand-shell">
         <img className="brand-logo" src="/brand/vrena-logo-full-light.svg" alt="VRena" />
         <div className="brand-actions">
@@ -186,82 +127,48 @@ export default function App() {
       </section>
 
       <section className="content-card">
-        {status?.registered ? (
-          <>
-            <span className="eyebrow">{copy.memberEyebrow}</span>
-            <h1>{copy.readyTitle}</h1>
-            <p className="lead">{copy.readyGreeting.replace('{name}', status.displayName || copy.defaultPlayer)}</p>
-            <div className="phone-row">
-              <span className="phone-icon"><ShieldIcon /></span>
-              <div><small>{copy.memberPhone}</small><strong>Zalo Mini App</strong></div>
-              <span className="check-icon"><ShieldIcon /></span>
-            </div>
-            <div className="member-note"><strong>{copy.profileBenefits}</strong><p>{copy.profileBenefitsBody}</p></div>
-            <div className="legal-links" aria-label={copy.legalAriaLabel}>
-              <button type="button" onClick={() => openLegalDocument('privacyPolicy')}>{copy.privacyLink}</button>
-              <button type="button" onClick={() => openLegalDocument('termsAndConditions')}>{copy.termsLink}</button>
-            </div>
-          </>
-        ) : registrationOpen ? (
-          <>
-            <span className="eyebrow">{copy.registerEyebrow}</span>
-            <h1>{copy.registerTitle}</h1>
-            <p className="lead">{copy.registerIntro}</p>
-            <div className="benefit-row">
-              <span className="benefit-icon"><ShieldIcon /></span>
-              <div><strong>{copy.phoneWhy}</strong><p>{copy.phoneWhyBody}</p></div>
-            </div>
-            <label className="consent-row">
-              <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.target.checked)} />
-              <span>
-                {copy.consentBeforePrivacy}
-                <button className="legal-inline-button" onClick={() => openLegalDocument('privacyPolicy')} type="button">{copy.privacyLink}</button>
-                {copy.consentBetweenLegal}
-                <button className="legal-inline-button" onClick={() => openLegalDocument('termsAndConditions')} type="button">{copy.termsLink}</button>
-                {copy.consentAfterTerms}
-              </span>
-            </label>
-            {activeErrorCode ? <div className="message error-message" role="alert">{copy.errors[activeErrorCode]}</div> : null}
-            <button className="primary-button" type="button" disabled={busy} onClick={() => void handleRegistration()}>
-              <span className="button-label">{busy ? copy.registering : copy.registerWithZalo}</span><span aria-hidden="true">→</span>
-            </button>
-            <button
-              className="secondary-button"
-              type="button"
-              disabled={busy}
-              onClick={() => {
-                setRegistrationOpen(false)
-                setAcceptedTerms(false)
-                setActiveErrorCode(null)
-              }}
-            >
-              {copy.continueWithoutRegistering}
-            </button>
-          </>
-        ) : (
-          <>
-            <span className="eyebrow">VRENA PLAYER</span>
-            <h1>{copy.welcomeTitle}</h1>
-            <p className="lead">{copy.welcomeBody}</p>
-            <div className="benefit-row">
-              <span className="benefit-icon"><ShieldIcon /></span>
-              <div><strong>{copy.identifyTitle}</strong><p>{copy.identifyBody}</p></div>
-            </div>
-            <div className="benefit-row benefit-row-secondary">
-              <span className="benefit-icon"><ShieldIcon /></span>
-              <div><strong>{copy.optionalTitle}</strong><p>{copy.optionalBody}</p></div>
-            </div>
-            {activeErrorCode ? <div className="message error-message" role="alert">{copy.errors[activeErrorCode]}</div> : null}
-            <button className="primary-button" type="button" disabled={busy} onClick={startRegistration}>
-              <span className="button-label">{copy.startRegistration}</span><span aria-hidden="true">→</span>
-            </button>
-            <p className="registration-disclaimer">{copy.registrationDisclaimer}</p>
-            <div className="legal-links" aria-label={copy.legalAriaLabel}>
-              <button type="button" onClick={() => openLegalDocument('privacyPolicy')}>{copy.privacyLink}</button>
-              <button type="button" onClick={() => openLegalDocument('termsAndConditions')}>{copy.termsLink}</button>
-            </div>
-          </>
-        )}
+        <span className="eyebrow">{copy.eyebrow}</span>
+        <h1>{copy.title}</h1>
+        <p className="lead">{copy.intro}</p>
+
+        <div className="benefit-row">
+          <span className="benefit-icon"><ShieldIcon /></span>
+          <div><strong>{copy.noAccountTitle}</strong><p>{copy.noAccountBody}</p></div>
+        </div>
+        <div className="benefit-row benefit-row-secondary">
+          <span className="benefit-icon"><ShieldIcon /></span>
+          <div><strong>{copy.venueHelpTitle}</strong><p>{copy.venueHelpBody}</p></div>
+        </div>
+
+        <button
+          aria-expanded={guideOpen}
+          className="primary-button"
+          type="button"
+          onClick={() => setGuideOpen((open) => !open)}
+        >
+          <span className="button-label">{guideOpen ? copy.closeGuide : copy.openGuide}</span>
+          <span aria-hidden="true">{guideOpen ? '↑' : '→'}</span>
+        </button>
+
+        {guideOpen ? (
+          <section aria-live="polite" className="guide-panel">
+            <h2>{copy.guideTitle}</h2>
+            <ol>
+              {copy.guideSteps.map((step, index) => (
+                <li key={step}>
+                  <span>{index + 1}</span>
+                  <p>{step}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
+
+        <p className="registration-disclaimer">{copy.disclaimer}</p>
+        <div className="legal-links" aria-label={copy.legalAriaLabel}>
+          <button type="button" onClick={() => openLegalDocument('privacyPolicy')}>{copy.privacyLink}</button>
+          <button type="button" onClick={() => openLegalDocument('termsAndConditions')}>{copy.termsLink}</button>
+        </div>
       </section>
 
       <footer><ShieldIcon /><span>{copy.footer}</span></footer>

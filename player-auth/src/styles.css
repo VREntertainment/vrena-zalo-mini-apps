@@ -360,6 +360,54 @@ footer svg {
   font-size: 21px;
 }
 
+.guide-panel {
+  margin-top: 14px;
+  padding: 17px;
+  border: 1px solid var(--vrena-purple-200);
+  border-radius: 17px;
+  background: var(--vrena-purple-50);
+}
+
+.guide-panel h2 {
+  margin: 0;
+  color: var(--vrena-ink);
+  font-size: 17px;
+}
+
+.guide-panel ol {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-panel li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.guide-panel li > span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--vrena-white);
+  background: var(--vrena-purple-500);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.guide-panel p {
+  padding-top: 4px;
+  color: var(--vrena-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .secondary-button {
   min-height: 46px;
   margin-top: 10px;
