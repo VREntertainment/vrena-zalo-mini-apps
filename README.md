@@ -3,11 +3,10 @@
 Independent Zalo Mini App clients used by VR Entertainment:
 
 - `employee-attendance/` — staff attendance and workplace verification.
-- `player-auth/` — player sign-in and account creation with a Zalo-verified phone number.
+- `player-auth/` — account-free VRena Player information guide.
 
 Each client has its own setup, build, and Zalo deployment instructions in its directory.
 
-The server-side APIs, Supabase migrations, and secrets remain in
+Server-backed Mini Apps keep their APIs, Supabase migrations and secrets in
 [`VREntertainment/vrena-booking`](https://github.com/VREntertainment/vrena-booking).
-The clients communicate with that deployed backend over HTTPS; they are not bundled into
-the Next.js web application.
+The account-free Player guide does not call that backend.

@@ -1,5 +1,3 @@
-import type { PlayerAuthErrorCode } from './api'
-
 export type LanguageCode = 'en' | 'vi' | 'ko' | 'ja' | 'fr' | 'de' | 'it'
 export type LegalDocument = 'privacyPolicy' | 'termsAndConditions'
 
@@ -16,34 +14,19 @@ export type PlayerCopy = {
   legalAriaLabel: string
   privacyLink: string
   termsLink: string
-  memberEyebrow: string
-  readyTitle: string
-  readyGreeting: string
-  defaultPlayer: string
-  memberPhone: string
-  profileBenefits: string
-  profileBenefitsBody: string
-  registerEyebrow: string
-  registerTitle: string
-  registerIntro: string
-  phoneWhy: string
-  phoneWhyBody: string
-  consentBeforePrivacy: string
-  consentBetweenLegal: string
-  consentAfterTerms: string
-  registering: string
-  registerWithZalo: string
-  continueWithoutRegistering: string
-  welcomeTitle: string
-  welcomeBody: string
-  identifyTitle: string
-  identifyBody: string
-  optionalTitle: string
-  optionalBody: string
-  startRegistration: string
-  registrationDisclaimer: string
+  eyebrow: string
+  title: string
+  intro: string
+  noAccountTitle: string
+  noAccountBody: string
+  venueHelpTitle: string
+  venueHelpBody: string
+  openGuide: string
+  closeGuide: string
+  guideTitle: string
+  guideSteps: [string, string, string]
+  disclaimer: string
   footer: string
-  errors: Record<PlayerAuthErrorCode, string>
   legal: Record<LegalDocument, LegalContent>
 }
 
@@ -82,316 +65,184 @@ export function storeLanguage(language: LanguageCode) {
 
 export const translations: Record<LanguageCode, PlayerCopy> = {
   en: {
-    languageLabel: 'Language',
-    closeLabel: 'Close',
+    languageLabel: 'Language', closeLabel: 'Close', legalAriaLabel: 'Legal documents',
     legalNote: 'This document is displayed inside VRena Player and contains no link that navigates outside the Mini App.',
-    legalAriaLabel: 'Legal documents',
-    privacyLink: 'Privacy Policy',
-    termsLink: 'Terms of Use',
-    memberEyebrow: 'VRENA MEMBER',
-    readyTitle: 'Your profile is ready',
-    readyGreeting: 'Hello {name}. Your member profile has been securely recognized in VRena Player.',
-    defaultPlayer: 'Player',
-    memberPhone: 'Profile identity',
-    profileBenefits: 'Profile benefits',
-    profileBenefitsBody: 'Your profile helps VRena recognize you and protect your activity history when you use services at a VRena venue.',
-    registerEyebrow: 'NEW PROFILE REGISTRATION',
-    registerTitle: 'Become a member',
-    registerIntro: 'Only for people without an existing VRena account. This Mini App does not use this function to link an existing account.',
-    phoneWhy: 'How is your profile identified?',
-    phoneWhyBody: 'VRena uses only your app-scoped Zalo user identifier to create, protect and recognize this profile. No phone number or email is requested.',
-    consentBeforePrivacy: 'I voluntarily register a new profile and agree that VRena may receive and use my app-scoped Zalo user identifier for the purpose above. I have read the ',
-    consentBetweenLegal: ' and agree to the ',
-    consentAfterTerms: '.',
-    registering: 'Registering…',
-    registerWithZalo: 'Create my VRena profile',
-    continueWithoutRegistering: 'Not now, continue viewing information',
-    welcomeTitle: 'Your VRena player profile',
-    welcomeBody: 'Explore member-profile benefits. This Mini App does not request your phone number or email.',
-    identifyTitle: 'Member recognition',
-    identifyBody: 'One profile helps VRena recognize you when you join activities at a VRena venue.',
-    optionalTitle: 'Registration is optional',
-    optionalBody: 'Creating a profile uses only the verified identifier already provided to this Mini App by Zalo.',
-    startRegistration: 'Register as a VRena member',
-    registrationDisclaimer: 'For new profiles only. Declining registration does not interrupt other Mini App content.',
-    footer: 'Protected data · No advertising · No external navigation',
-    errors: {
-      zaloTimeout: 'Zalo is not responding. Close and reopen the Mini App, then try again.',
-      sessionUnavailable: 'A secure Zalo session could not be established. Please reopen the Mini App.',
-      serverTimeout: 'VRena is taking too long to respond. Please try again.',
-      networkUnavailable: 'VRena could not be reached. Check your connection and try again.',
-      serviceUnavailable: 'VRena registration is temporarily unavailable. Please try again later.',
-      tooManyAttempts: 'Too many attempts. Please wait one minute before trying again.',
-      identityMismatch: 'The Zalo session does not match this registration. Close and reopen the Mini App.',
-      revokedAccount: 'This Zalo profile has been revoked. Please contact VRena for support.',
-      consentRequired: 'Please accept the Privacy Policy and Terms of Use before registering.',
-      unknown: 'The VRena profile could not be registered. Please try again.',
-    },
+    privacyLink: 'Privacy Policy', termsLink: 'Terms of Use', eyebrow: 'VRENA PLAYER GUIDE',
+    title: 'Explore VRena Player', intro: 'View player information and learn how to get help at a VRena venue. No account is required.',
+    noAccountTitle: 'No online registration', noAccountBody: 'This Mini App does not request your phone number, email or Zalo user identifier.',
+    venueHelpTitle: 'Help at the venue', venueHelpBody: 'If you need membership assistance, the VRena team can help you in person.',
+    openGuide: 'How it works at VRena', closeGuide: 'Hide the guide', guideTitle: 'At the venue',
+    guideSteps: ['Choose the VR activity you want to experience.', 'Ask the VRena team if you need game or membership guidance.', 'Enjoy your session; no Mini App account is needed.'],
+    disclaimer: 'This Mini App provides information only and does not create or link a VRena account.',
+    footer: 'No account required · No advertising · No external navigation',
     legal: {
-      privacyPolicy: {
-        title: 'VRena Player Privacy Policy',
-        updated: 'Updated 20 October 2026',
-        sections: [
-          { heading: '1. Scope', body: 'This policy explains how VR ENTERTAINMENT CO., LTD. processes personal information when a user voluntarily registers a new player profile in VRena Player.' },
-          { heading: '2. Data processed', body: 'With your permission, VRena receives the app-scoped Zalo user identifier and technical verification data required to create a new profile. The Mini App does not request your phone number, email, contacts, camera, microphone or location.' },
-          { heading: '3. Purpose', body: 'The data is used to create and identify a new player profile, protect it, prevent fraud and support the user. Email is not required in this registration flow.' },
-          { heading: '4. Consent and choice', body: 'Registration is optional. Refusal only stops new-profile creation. You may withdraw consent or request access, correction or deletion as permitted by law.' },
-          { heading: '5. Data sharing', body: 'VRena does not sell or rent personal data. Data is shared only with service providers required for operation and security, or with authorities when required by law.' },
-          { heading: '6. Retention and security', body: 'VRena applies appropriate technical and organizational safeguards. Data is retained only as long as necessary for the purposes above or as required by law.' },
-          { heading: '7. Contact', body: 'For personal-data requests, contact VR ENTERTAINMENT CO., LTD. at contact@vre-vietnam.com or 0981 152 315.' },
-        ],
-      },
-      termsAndConditions: {
-        title: 'VRena Player Terms of Use',
-        updated: 'Updated 20 October 2026',
-        sections: [
-          { heading: '1. Scope', body: 'VRena Player is a Mini App of VR ENTERTAINMENT CO., LTD. Information and benefits are available without registration. A user may voluntarily create a player profile identified by the app-scoped Zalo user identifier.' },
-          { heading: '2. Permission and data', body: 'The Mini App does not request phone-number access. Profile creation uses only the verified app-scoped Zalo user identifier after the user reads and accepts these documents.' },
-          { heading: '3. User choice', body: 'Creating a profile is optional and does not imply consent for advertising or any unrelated purpose.' },
-          { heading: '4. User accounts', body: 'This function creates only a new player profile and does not link an existing VRena account. Existing users should ask VRena staff at the venue for support.' },
-          { heading: '5. Security and sharing', body: 'VRena uses reasonable safeguards, does not sell or rent personal data, and shares it only when required for operation or by law.' },
-          { heading: '6. Changes and availability', body: 'VRena may update the Mini App or these terms for service, safety or legal reasons. The service may be temporarily unavailable for maintenance, incident response or user protection.' },
-          { heading: '7. Governing law and contact', body: 'These terms are governed by Vietnamese law. Contact contact@vre-vietnam.com or 0981 152 315 for support.' },
-        ],
-      },
+      privacyPolicy: { title: 'VRena Player Privacy Policy', updated: 'Updated 31 October 2026', sections: [
+        { heading: '1. Scope', body: 'VRena Player is an informational Mini App operated by VR ENTERTAINMENT CO., LTD. It does not provide online account registration.' },
+        { heading: '2. Data processed', body: 'The Mini App does not request, receive or store your phone number, email, contacts, camera, microphone, location or Zalo user identifier. Your language choice is stored only on your device.' },
+        { heading: '3. Service operation', body: 'The Mini App does not call the VRena registration service, show advertising or direct you to an external website.' },
+        { heading: '4. Contact', body: 'For privacy questions, contact VR ENTERTAINMENT CO., LTD. at contact@vre-vietnam.com or 0981 152 315.' },
+      ] },
+      termsAndConditions: { title: 'VRena Player Terms of Use', updated: 'Updated 31 October 2026', sections: [
+        { heading: '1. Service', body: 'VRena Player provides information about the in-venue player experience. No Mini App account is required or created.' },
+        { heading: '2. Use', body: 'Use the guide for general information and ask VRena staff at the venue for current game, session or membership assistance.' },
+        { heading: '3. Availability and changes', body: 'VRena may update this guide for service, safety or legal reasons. Venue availability and activities may change.' },
+        { heading: '4. Governing law and contact', body: 'These terms are governed by Vietnamese law. Contact contact@vre-vietnam.com or 0981 152 315 for support.' },
+      ] },
     },
   },
   vi: {
-    languageLabel: 'Ngôn ngữ', closeLabel: 'Đóng',
+    languageLabel: 'Ngôn ngữ', closeLabel: 'Đóng', legalAriaLabel: 'Tài liệu pháp lý',
     legalNote: 'Tài liệu này được hiển thị trực tiếp trong VRena Player và không chứa liên kết điều hướng ra ngoài Mini App.',
-    legalAriaLabel: 'Tài liệu pháp lý', privacyLink: 'Chính sách quyền riêng tư', termsLink: 'Điều khoản sử dụng',
-    memberEyebrow: 'THÀNH VIÊN VRENA', readyTitle: 'Hồ sơ đã sẵn sàng',
-    readyGreeting: 'Xin chào {name}. Hồ sơ thành viên của bạn đã được nhận diện an toàn trong VRena Player.', defaultPlayer: 'Người chơi',
-    memberPhone: 'Định danh hồ sơ', profileBenefits: 'Quyền lợi hồ sơ',
-    profileBenefitsBody: 'Hồ sơ giúp VRena nhận diện thành viên và bảo vệ lịch sử hoạt động khi bạn sử dụng dịch vụ tại địa điểm VRena.',
-    registerEyebrow: 'ĐĂNG KÝ HỒ SƠ MỚI', registerTitle: 'Đăng ký thành viên',
-    registerIntro: 'Chỉ dành cho người chưa có tài khoản VRena. Mini App không dùng chức năng này để liên kết tài khoản có sẵn.',
-    phoneWhy: 'Hồ sơ được nhận diện như thế nào?', phoneWhyBody: 'VRena chỉ dùng mã người dùng Zalo dành riêng cho Mini App để tạo, bảo vệ và nhận diện hồ sơ. Không yêu cầu số điện thoại hoặc email.',
-    consentBeforePrivacy: 'Tôi tự nguyện đăng ký hồ sơ mới và đồng ý cho VRena nhận, sử dụng mã người dùng Zalo dành riêng cho Mini App cho mục đích nêu trên. Tôi đã đọc ',
-    consentBetweenLegal: ' và đồng ý với ', consentAfterTerms: '.', registering: 'Đang đăng ký…',
-    registerWithZalo: 'Tạo hồ sơ VRena của tôi', continueWithoutRegistering: 'Để sau, tiếp tục xem thông tin',
-    welcomeTitle: 'Hồ sơ người chơi VRena', welcomeBody: 'Khám phá quyền lợi hồ sơ thành viên. Mini App không yêu cầu số điện thoại hoặc email.',
-    identifyTitle: 'Nhận diện thành viên', identifyBody: 'Một hồ sơ thống nhất giúp VRena nhận diện bạn khi tham gia hoạt động tại địa điểm VRena.',
-    optionalTitle: 'Đăng ký có lựa chọn', optionalBody: 'Việc tạo hồ sơ chỉ dùng mã định danh đã được Zalo cung cấp và xác thực cho Mini App này.',
-    startRegistration: 'Đăng ký thành viên VRena', registrationDisclaimer: 'Dành cho hồ sơ mới. Từ chối đăng ký không làm gián đoạn nội dung khác của Mini App.',
-    footer: 'Dữ liệu được bảo vệ · Không quảng cáo · Không điều hướng ra ngoài',
-    errors: {
-      zaloTimeout: 'Zalo chưa phản hồi. Vui lòng đóng và mở lại Mini App, sau đó thử lại.', sessionUnavailable: 'Không thể bắt đầu phiên Zalo an toàn. Vui lòng mở lại Mini App.',
-      serverTimeout: 'VRena phản hồi quá chậm. Vui lòng thử lại.', networkUnavailable: 'Không thể kết nối với VRena. Vui lòng kiểm tra mạng và thử lại.',
-      serviceUnavailable: 'Dịch vụ đăng ký VRena đang tạm thời gián đoạn. Vui lòng thử lại sau.',
-      tooManyAttempts: 'Bạn đã thử quá nhiều lần. Vui lòng chờ một phút rồi thử lại.',
-      identityMismatch: 'Phiên Zalo không khớp với đăng ký này. Vui lòng đóng và mở lại Mini App.',
-      revokedAccount: 'Hồ sơ Zalo này đã bị thu hồi. Vui lòng liên hệ VRena để được hỗ trợ.', consentRequired: 'Vui lòng đồng ý với Chính sách quyền riêng tư và Điều khoản sử dụng trước khi đăng ký.',
-      unknown: 'Không thể đăng ký hồ sơ VRena. Vui lòng thử lại.',
-    },
+    privacyLink: 'Chính sách quyền riêng tư', termsLink: 'Điều khoản sử dụng', eyebrow: 'CẨM NANG VRENA PLAYER',
+    title: 'Khám phá VRena Player', intro: 'Xem thông tin người chơi và cách nhận hỗ trợ tại địa điểm VRena. Không cần tạo tài khoản.',
+    noAccountTitle: 'Không đăng ký trực tuyến', noAccountBody: 'Mini App không yêu cầu số điện thoại, email hoặc mã người dùng Zalo của bạn.',
+    venueHelpTitle: 'Hỗ trợ tại địa điểm', venueHelpBody: 'Nếu cần hỗ trợ về thành viên, đội ngũ VRena sẽ hướng dẫn trực tiếp.',
+    openGuide: 'Cách sử dụng tại VRena', closeGuide: 'Ẩn hướng dẫn', guideTitle: 'Tại địa điểm VRena',
+    guideSteps: ['Chọn hoạt động VR mà bạn muốn trải nghiệm.', 'Hỏi đội ngũ VRena nếu bạn cần tư vấn trò chơi hoặc thành viên.', 'Tận hưởng buổi chơi; không cần tài khoản Mini App.'],
+    disclaimer: 'Mini App chỉ cung cấp thông tin và không tạo hoặc liên kết tài khoản VRena.',
+    footer: 'Không cần tài khoản · Không quảng cáo · Không điều hướng ra ngoài',
     legal: {
-      privacyPolicy: {
-        title: 'Chính sách quyền riêng tư VRena Player', updated: 'Cập nhật ngày 20/10/2026',
-        sections: [
-          { heading: '1. Phạm vi', body: 'Chính sách này giải thích cách CÔNG TY TNHH VR ENTERTAINMENT xử lý thông tin cá nhân khi người dùng tự nguyện đăng ký một hồ sơ người chơi mới trong Mini App VRena Player.' },
-          { heading: '2. Dữ liệu được xử lý', body: 'Khi người dùng đồng ý, VRena nhận mã người dùng Zalo dành riêng cho Mini App và dữ liệu kỹ thuật cần thiết để tạo hồ sơ mới. Mini App không yêu cầu số điện thoại, email, vị trí, danh bạ, camera hoặc micro.' },
-          { heading: '3. Mục đích sử dụng', body: 'Dữ liệu được dùng để tạo và nhận diện hồ sơ người chơi mới, bảo vệ hồ sơ, phòng chống gian lận và hỗ trợ người dùng. Email không bắt buộc trong luồng đăng ký này.' },
-          { heading: '4. Sự đồng ý và lựa chọn', body: 'Việc đăng ký là tự nguyện. Từ chối chỉ dừng việc tạo hồ sơ mới. Người dùng có thể rút lại sự đồng ý hoặc yêu cầu truy cập, chỉnh sửa hay xóa dữ liệu theo quy định.' },
-          { heading: '5. Chia sẻ dữ liệu', body: 'VRena không bán hoặc cho thuê dữ liệu cá nhân. Dữ liệu chỉ được chia sẻ với nhà cung cấp dịch vụ cần thiết cho vận hành, bảo mật hoặc với cơ quan có thẩm quyền khi pháp luật yêu cầu.' },
-          { heading: '6. Lưu giữ và bảo mật', body: 'VRena áp dụng biện pháp kỹ thuật và tổ chức phù hợp. Dữ liệu chỉ được lưu trong thời gian cần thiết cho mục đích nêu trên hoặc theo yêu cầu pháp luật.' },
-          { heading: '7. Liên hệ', body: 'Yêu cầu về dữ liệu cá nhân có thể gửi tới CÔNG TY TNHH VR ENTERTAINMENT qua contact@vre-vietnam.com hoặc 0981 152 315.' },
-        ],
-      },
-      termsAndConditions: {
-        title: 'Điều khoản sử dụng VRena Player', updated: 'Cập nhật ngày 20/10/2026',
-        sections: [
-          { heading: '1. Phạm vi', body: 'VRena Player là Mini App của CÔNG TY TNHH VR ENTERTAINMENT. Người dùng có thể xem thông tin mà không cần đăng ký và có thể tự nguyện tạo hồ sơ bằng mã người dùng Zalo dành riêng cho Mini App.' },
-          { heading: '2. Quyền và dữ liệu', body: 'Mini App không yêu cầu quyền số điện thoại. Việc tạo hồ sơ chỉ dùng mã người dùng Zalo đã được xác thực sau khi người dùng đọc và đồng ý với các tài liệu này.' },
-          { heading: '3. Lựa chọn của người dùng', body: 'Việc tạo hồ sơ là tự nguyện và không đồng nghĩa với đồng ý nhận quảng cáo hoặc sử dụng dữ liệu cho mục đích không liên quan.' },
-          { heading: '4. Tài khoản người dùng', body: 'Chức năng này chỉ tạo hồ sơ mới và không liên kết với tài khoản VRena có sẵn. Người đã có tài khoản có thể liên hệ nhân viên VRena tại địa điểm để được hỗ trợ.' },
-          { heading: '5. Bảo mật và chia sẻ', body: 'VRena áp dụng biện pháp hợp lý, không bán hoặc cho thuê dữ liệu cá nhân và chỉ chia sẻ khi cần thiết cho vận hành hoặc theo yêu cầu pháp luật.' },
-          { heading: '6. Thay đổi và gián đoạn', body: 'VRena có thể cập nhật Mini App hoặc điều khoản vì lý do dịch vụ, an toàn hoặc pháp luật. Dịch vụ có thể tạm ngừng để bảo trì, xử lý sự cố hoặc bảo vệ người dùng.' },
-          { heading: '7. Luật áp dụng và liên hệ', body: 'Các điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Liên hệ contact@vre-vietnam.com hoặc 0981 152 315 để được hỗ trợ.' },
-        ],
-      },
+      privacyPolicy: { title: 'Chính sách quyền riêng tư VRena Player', updated: 'Cập nhật ngày 31/10/2026', sections: [
+        { heading: '1. Phạm vi', body: 'VRena Player là Mini App cung cấp thông tin do CÔNG TY TNHH VR ENTERTAINMENT vận hành. Mini App không có chức năng đăng ký tài khoản trực tuyến.' },
+        { heading: '2. Dữ liệu được xử lý', body: 'Mini App không yêu cầu, nhận hoặc lưu số điện thoại, email, danh bạ, camera, micro, vị trí hoặc mã người dùng Zalo. Lựa chọn ngôn ngữ chỉ được lưu trên thiết bị của bạn.' },
+        { heading: '3. Vận hành dịch vụ', body: 'Mini App không gọi dịch vụ đăng ký VRena, không hiển thị quảng cáo và không điều hướng người dùng đến trang web bên ngoài.' },
+        { heading: '4. Liên hệ', body: 'Câu hỏi về quyền riêng tư có thể gửi tới CÔNG TY TNHH VR ENTERTAINMENT qua contact@vre-vietnam.com hoặc 0981 152 315.' },
+      ] },
+      termsAndConditions: { title: 'Điều khoản sử dụng VRena Player', updated: 'Cập nhật ngày 31/10/2026', sections: [
+        { heading: '1. Dịch vụ', body: 'VRena Player cung cấp thông tin về trải nghiệm người chơi tại địa điểm. Mini App không yêu cầu hoặc tạo tài khoản.' },
+        { heading: '2. Sử dụng', body: 'Hướng dẫn này cung cấp thông tin chung. Vui lòng hỏi nhân viên VRena tại địa điểm để biết thông tin hiện tại về trò chơi, buổi chơi hoặc thành viên.' },
+        { heading: '3. Tính khả dụng và thay đổi', body: 'VRena có thể cập nhật hướng dẫn vì lý do dịch vụ, an toàn hoặc pháp luật. Hoạt động và tình trạng phục vụ tại địa điểm có thể thay đổi.' },
+        { heading: '4. Luật áp dụng và liên hệ', body: 'Các điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Liên hệ contact@vre-vietnam.com hoặc 0981 152 315 để được hỗ trợ.' },
+      ] },
     },
   },
   ko: {
-    languageLabel: '언어', closeLabel: '닫기', legalNote: '이 문서는 VRena Player 안에서 표시되며 미니앱 외부로 이동하는 링크가 없습니다.', legalAriaLabel: '법적 문서', privacyLink: '개인정보 처리방침', termsLink: '이용약관',
-    memberEyebrow: 'VRENA 회원', readyTitle: '프로필이 준비되었습니다', readyGreeting: '안녕하세요, {name}님. VRena Player에서 회원 프로필을 안전하게 확인했습니다.', defaultPlayer: '플레이어', memberPhone: '프로필 식별 방식',
-    profileBenefits: '프로필 혜택', profileBenefitsBody: 'VRena 매장에서 서비스를 이용할 때 회원을 식별하고 활동 기록을 보호하는 데 사용됩니다.',
-    registerEyebrow: '새 프로필 등록', registerTitle: '회원 등록', registerIntro: '기존 VRena 계정이 없는 분만 이용할 수 있습니다. 이 미니앱은 기존 계정 연결에 이 기능을 사용하지 않습니다.',
-    phoneWhy: '프로필은 어떻게 식별되나요?', phoneWhyBody: 'VRena는 이 미니앱 전용 Zalo 사용자 식별자만 사용해 프로필을 생성·보호·식별합니다. 전화번호와 이메일은 요청하지 않습니다.',
-    consentBeforePrivacy: '새 프로필 등록을 자발적으로 신청하며 위 목적을 위해 VRena가 미니앱 전용 Zalo 사용자 식별자를 수신하고 사용하는 데 동의합니다. ', consentBetweenLegal: '을 읽었으며 ', consentAfterTerms: '에 동의합니다.',
-    registering: '등록 중…', registerWithZalo: 'VRena 프로필 만들기', continueWithoutRegistering: '나중에, 정보 계속 보기',
-    welcomeTitle: 'VRena 플레이어 프로필', welcomeBody: '회원 프로필 혜택을 확인하세요. 이 미니앱은 전화번호나 이메일을 요청하지 않습니다.',
-    identifyTitle: '회원 식별', identifyBody: '하나의 프로필로 VRena 매장 활동 참여 시 회원을 확인할 수 있습니다.', optionalTitle: '선택적 등록', optionalBody: '프로필 생성에는 Zalo가 이 미니앱에 제공하고 확인한 식별자만 사용됩니다.',
-    startRegistration: 'VRena 회원 등록', registrationDisclaimer: '새 프로필 전용입니다. 등록을 거부해도 다른 미니앱 콘텐츠 이용에는 영향이 없습니다.', footer: '데이터 보호 · 광고 없음 · 외부 이동 없음',
-    errors: {
-      zaloTimeout: 'Zalo가 응답하지 않습니다. 미니앱을 닫았다가 다시 열어 주세요.', sessionUnavailable: '안전한 Zalo 세션을 시작할 수 없습니다. 미니앱을 다시 열어 주세요.', serverTimeout: 'VRena 응답이 지연되고 있습니다. 다시 시도해 주세요.',
-      networkUnavailable: 'VRena에 연결할 수 없습니다. 네트워크를 확인해 주세요.', serviceUnavailable: 'VRena 등록 서비스를 일시적으로 이용할 수 없습니다.',
-      tooManyAttempts: '시도 횟수가 너무 많습니다. 1분 후 다시 시도해 주세요.',
-      identityMismatch: 'Zalo 세션과 등록 사용자가 일치하지 않습니다. 미니앱을 다시 열어 주세요.', revokedAccount: '이 Zalo 프로필은 해지되었습니다. VRena에 문의해 주세요.', consentRequired: '등록 전에 개인정보 처리방침과 이용약관에 동의해 주세요.', unknown: 'VRena 프로필을 등록할 수 없습니다. 다시 시도해 주세요.',
-    },
+    languageLabel: '언어', closeLabel: '닫기', legalAriaLabel: '법적 문서',
+    legalNote: '이 문서는 VRena Player 안에서 표시되며 미니앱 외부로 이동하는 링크가 없습니다.',
+    privacyLink: '개인정보 처리방침', termsLink: '이용약관', eyebrow: 'VRENA PLAYER 안내',
+    title: 'VRena Player 알아보기', intro: '플레이어 정보를 확인하고 VRena 매장에서 도움받는 방법을 알아보세요. 계정은 필요하지 않습니다.',
+    noAccountTitle: '온라인 가입 없음', noAccountBody: '이 미니앱은 전화번호, 이메일 또는 Zalo 사용자 식별자를 요청하지 않습니다.',
+    venueHelpTitle: '매장 지원', venueHelpBody: '멤버십 도움이 필요하면 VRena 직원이 현장에서 안내해 드립니다.',
+    openGuide: 'VRena 이용 방법', closeGuide: '안내 숨기기', guideTitle: 'VRena 매장에서',
+    guideSteps: ['체험하고 싶은 VR 활동을 선택하세요.', '게임 또는 멤버십 안내가 필요하면 VRena 직원에게 문의하세요.', '미니앱 계정 없이 세션을 즐기세요.'],
+    disclaimer: '이 미니앱은 정보만 제공하며 VRena 계정을 생성하거나 연결하지 않습니다.',
+    footer: '계정 불필요 · 광고 없음 · 외부 이동 없음',
     legal: {
-      privacyPolicy: { title: 'VRena Player 개인정보 처리방침', updated: '2026년 10월 20일 업데이트', sections: [
-        { heading: '1. 적용 범위', body: '본 방침은 사용자가 VRena Player에서 새 플레이어 프로필을 자발적으로 등록할 때 VR ENTERTAINMENT CO., LTD.가 개인정보를 처리하는 방법을 설명합니다.' },
-        { heading: '2. 처리 데이터', body: '동의 시 새 프로필 생성에 필요한 미니앱 전용 Zalo 사용자 식별자와 기술적 확인 데이터를 수신합니다. 전화번호, 이메일, 연락처, 카메라, 마이크 또는 위치는 요청하지 않습니다.' },
-        { heading: '3. 이용 목적', body: '새 프로필 생성 및 식별, 보호, 부정 사용 방지와 사용자 지원에 사용합니다. 이메일은 필수가 아닙니다.' },
-        { heading: '4. 동의와 선택', body: '등록은 선택 사항입니다. 거부하면 새 프로필 생성만 중단됩니다. 법률에 따라 동의 철회, 열람, 수정 또는 삭제를 요청할 수 있습니다.' },
-        { heading: '5. 데이터 공유', body: '개인정보를 판매하거나 대여하지 않습니다. 운영·보안에 필요한 서비스 제공자 또는 법률상 요구되는 기관과만 공유합니다.' },
-        { heading: '6. 보관과 보안', body: '적절한 기술적·관리적 보호조치를 적용하며 목적 달성 또는 법적 의무에 필요한 기간만 보관합니다.' },
-        { heading: '7. 문의', body: '개인정보 문의: contact@vre-vietnam.com 또는 0981 152 315.' },
+      privacyPolicy: { title: 'VRena Player 개인정보 처리방침', updated: '2026년 10월 31일 업데이트', sections: [
+        { heading: '1. 범위', body: 'VRena Player는 VR ENTERTAINMENT CO., LTD.가 운영하는 정보 제공용 미니앱이며 온라인 계정 가입 기능을 제공하지 않습니다.' },
+        { heading: '2. 처리하는 데이터', body: '전화번호, 이메일, 연락처, 카메라, 마이크, 위치 또는 Zalo 사용자 식별자를 요청·수신·저장하지 않습니다. 언어 선택은 기기에만 저장됩니다.' },
+        { heading: '3. 서비스 운영', body: 'VRena 가입 서비스를 호출하지 않으며 광고를 표시하거나 외부 웹사이트로 이동시키지 않습니다.' },
+        { heading: '4. 문의', body: '개인정보 문의: contact@vre-vietnam.com 또는 0981 152 315.' },
       ] },
-      termsAndConditions: { title: 'VRena Player 이용약관', updated: '2026년 10월 20일 업데이트', sections: [
-        { heading: '1. 적용 범위', body: 'VRena Player는 VR ENTERTAINMENT CO., LTD.의 미니앱입니다. 등록 없이 정보를 볼 수 있고 미니앱 전용 Zalo 사용자 식별자로 새 프로필을 자발적으로 만들 수 있습니다.' },
-        { heading: '2. 권한과 데이터', body: '미니앱은 전화번호 권한을 요청하지 않습니다. 사용자가 문서를 확인하고 동의한 후 확인된 미니앱 전용 Zalo 사용자 식별자만 사용합니다.' },
-        { heading: '3. 사용자 선택', body: '프로필 생성은 선택 사항이며 광고 또는 관련 없는 데이터 사용에 대한 동의를 의미하지 않습니다.' },
-        { heading: '4. 사용자 계정', body: '이 기능은 새 프로필만 만들며 기존 VRena 계정과 연결하지 않습니다. 기존 사용자는 매장 직원에게 문의해 주세요.' },
-        { heading: '5. 보안과 공유', body: '합리적인 보호조치를 적용하고 개인정보를 판매·대여하지 않으며 운영 또는 법률상 필요한 경우에만 공유합니다.' },
-        { heading: '6. 변경과 이용 가능성', body: '서비스, 안전 또는 법적 사유로 미니앱과 약관을 변경할 수 있으며 유지보수나 사용자 보호를 위해 일시 중단될 수 있습니다.' },
-        { heading: '7. 준거법과 문의', body: '베트남 법률이 적용됩니다. 문의: contact@vre-vietnam.com 또는 0981 152 315.' },
+      termsAndConditions: { title: 'VRena Player 이용약관', updated: '2026년 10월 31일 업데이트', sections: [
+        { heading: '1. 서비스', body: 'VRena Player는 매장 내 플레이어 경험에 관한 정보를 제공합니다. 미니앱 계정은 필요하지 않으며 생성되지 않습니다.' },
+        { heading: '2. 이용', body: '일반 안내는 이 가이드를 이용하고 최신 게임, 세션 또는 멤버십 정보는 매장 직원에게 문의하세요.' },
+        { heading: '3. 제공 및 변경', body: '서비스, 안전 또는 법적 이유로 안내가 변경될 수 있으며 매장 활동과 이용 가능 여부도 달라질 수 있습니다.' },
+        { heading: '4. 준거법 및 문의', body: '베트남 법률이 적용됩니다. 지원: contact@vre-vietnam.com 또는 0981 152 315.' },
       ] },
     },
   },
   ja: {
-    languageLabel: '言語', closeLabel: '閉じる', legalNote: 'この文書はVRena Player内に表示され、ミニアプリ外へ移動するリンクは含まれません。', legalAriaLabel: '法的文書', privacyLink: 'プライバシーポリシー', termsLink: '利用規約',
-    memberEyebrow: 'VRENAメンバー', readyTitle: 'プロフィールの準備ができました', readyGreeting: 'こんにちは、{name}さん。VRena Playerでメンバープロフィールを安全に確認しました。', defaultPlayer: 'プレイヤー', memberPhone: 'プロフィール識別',
-    profileBenefits: 'プロフィールの特典', profileBenefitsBody: 'VRena店舗でサービスを利用する際の会員識別と活動履歴の保護に役立ちます。',
-    registerEyebrow: '新規プロフィール登録', registerTitle: 'メンバー登録', registerIntro: '既存のVRenaアカウントをお持ちでない方専用です。この機能は既存アカウントの連携には使用しません。',
-    phoneWhy: 'プロフィールはどのように識別されますか？', phoneWhyBody: 'このミニアプリ専用のZaloユーザー識別子だけを使ってプロフィールを作成・保護・識別します。電話番号やメールは求めません。',
-    consentBeforePrivacy: '新しいプロフィールへの登録を自発的に申し込み、上記目的でVRenaがミニアプリ専用のZaloユーザー識別子を受領・使用することに同意します。', consentBetweenLegal: 'を読み、', consentAfterTerms: 'に同意します。',
-    registering: '登録中…', registerWithZalo: 'VRenaプロフィールを作成', continueWithoutRegistering: '後で、情報を引き続き見る',
-    welcomeTitle: 'VRenaプレイヤープロフィール', welcomeBody: '会員プロフィールの特典をご覧ください。このミニアプリは電話番号やメールを求めません。',
-    identifyTitle: '会員識別', identifyBody: '1つのプロフィールでVRena店舗のアクティビティ参加時に会員を識別できます。', optionalTitle: '登録は任意です', optionalBody: 'プロフィール作成には、Zaloがこのミニアプリに提供し確認した識別子だけを使用します。',
-    startRegistration: 'VRenaメンバーに登録', registrationDisclaimer: '新規プロフィール専用です。登録を断っても他のコンテンツには影響しません。', footer: 'データ保護 · 広告なし · 外部遷移なし',
-    errors: {
-      zaloTimeout: 'Zaloが応答していません。ミニアプリを閉じて再度開いてください。', sessionUnavailable: '安全なZaloセッションを開始できません。ミニアプリを再度開いてください。', serverTimeout: 'VRenaの応答に時間がかかっています。再試行してください。', networkUnavailable: 'VRenaに接続できません。ネットワークを確認してください。',
-      serviceUnavailable: 'VRena登録サービスは一時的に利用できません。',
-      tooManyAttempts: '試行回数が多すぎます。1分後に再試行してください。', identityMismatch: 'Zaloセッションが登録ユーザーと一致しません。ミニアプリを再度開いてください。',
-      revokedAccount: 'このZaloプロフィールは失効しています。VRenaにお問い合わせください。', consentRequired: '登録前にプライバシーポリシーと利用規約に同意してください。', unknown: 'VRenaプロフィールを登録できません。再試行してください。',
-    },
+    languageLabel: '言語', closeLabel: '閉じる', legalAriaLabel: '法的文書',
+    legalNote: 'この文書はVRena Player内に表示され、ミニアプリ外へ移動するリンクはありません。',
+    privacyLink: 'プライバシーポリシー', termsLink: '利用規約', eyebrow: 'VRENA PLAYER ガイド',
+    title: 'VRena Playerを体験', intro: 'プレイヤー向け情報とVRena店舗でサポートを受ける方法をご案内します。アカウントは不要です。',
+    noAccountTitle: 'オンライン登録なし', noAccountBody: '電話番号、メールアドレス、Zaloユーザー識別子を要求しません。',
+    venueHelpTitle: '店舗でのサポート', venueHelpBody: 'メンバーシップについてはVRenaスタッフが店舗でご案内します。',
+    openGuide: 'VRenaでの利用方法', closeGuide: 'ガイドを閉じる', guideTitle: 'VRena店舗で',
+    guideSteps: ['体験したいVRアクティビティを選びます。', 'ゲームやメンバーシップについてVRenaスタッフに相談します。', 'ミニアプリアカウントなしでセッションを楽しみます。'],
+    disclaimer: 'このミニアプリは情報のみを提供し、VRenaアカウントの作成や連携は行いません。',
+    footer: 'アカウント不要 · 広告なし · 外部移動なし',
     legal: {
-      privacyPolicy: { title: 'VRena Player プライバシーポリシー', updated: '2026年10月20日更新', sections: [
-        { heading: '1. 適用範囲', body: '本方針は、VRena Playerで新しいプロフィールを任意登録する際にVR ENTERTAINMENT CO., LTD.が個人情報を処理する方法を説明します。' },
-        { heading: '2. 処理するデータ', body: '同意に基づき、ミニアプリ専用のZaloユーザー識別子とプロフィール作成に必要な技術的確認データを受領します。電話番号、メール、連絡先、カメラ、マイク、位置情報は求めません。' },
-        { heading: '3. 利用目的', body: '新しいプロフィールの作成・識別・保護、不正防止、利用者支援に使用します。メールは必須ではありません。' },
-        { heading: '4. 同意と選択', body: '登録は任意です。拒否すると新規プロフィール作成のみ停止します。法令に従い、同意撤回、閲覧、訂正、削除を請求できます。' },
-        { heading: '5. データ共有', body: '個人情報を販売・貸与しません。運営・安全に必要な事業者または法令上必要な機関とのみ共有します。' },
-        { heading: '6. 保管と安全', body: '適切な技術的・組織的対策を講じ、目的または法的義務に必要な期間のみ保管します。' },
-        { heading: '7. お問い合わせ', body: '個人情報に関する連絡先：contact@vre-vietnam.com または 0981 152 315。' },
+      privacyPolicy: { title: 'VRena Playerプライバシーポリシー', updated: '2026年10月31日更新', sections: [
+        { heading: '1. 範囲', body: 'VRena PlayerはVR ENTERTAINMENT CO., LTD.が運営する情報提供用ミニアプリで、オンラインアカウント登録機能はありません。' },
+        { heading: '2. 取り扱うデータ', body: '電話番号、メール、連絡先、カメラ、マイク、位置情報、Zaloユーザー識別子を要求・受信・保存しません。言語設定は端末内にのみ保存されます。' },
+        { heading: '3. サービス運用', body: 'VRena登録サービスへの通信、広告表示、外部サイトへの誘導は行いません。' },
+        { heading: '4. お問い合わせ', body: 'プライバシーに関するお問い合わせ: contact@vre-vietnam.com または 0981 152 315。' },
       ] },
-      termsAndConditions: { title: 'VRena Player 利用規約', updated: '2026年10月20日更新', sections: [
-        { heading: '1. 適用範囲', body: 'VRena PlayerはVR ENTERTAINMENT CO., LTD.のミニアプリです。登録なしで情報を閲覧し、ミニアプリ専用のZaloユーザー識別子で新しいプロフィールを任意作成できます。' },
-        { heading: '2. 権限とデータ', body: '電話番号権限は求めません。利用者が文書を確認し同意した後、確認済みのミニアプリ専用Zaloユーザー識別子だけを使用します。' },
-        { heading: '3. 利用者の選択', body: 'プロフィール作成は任意であり、広告や無関係なデータ利用への同意を意味しません。' },
-        { heading: '4. ユーザーアカウント', body: 'この機能は新規プロフィールのみ作成し、既存VRenaアカウントとは連携しません。既存ユーザーは店舗スタッフへお問い合わせください。' },
-        { heading: '5. 安全と共有', body: '合理的な保護措置を講じ、個人情報を販売・貸与せず、運営または法令上必要な場合のみ共有します。' },
-        { heading: '6. 変更と提供', body: 'サービス、安全、法的理由でミニアプリや規約を変更し、保守や利用者保護のため一時停止する場合があります。' },
-        { heading: '7. 準拠法と連絡先', body: 'ベトナム法が適用されます。contact@vre-vietnam.com または 0981 152 315へご連絡ください。' },
+      termsAndConditions: { title: 'VRena Player利用規約', updated: '2026年10月31日更新', sections: [
+        { heading: '1. サービス', body: 'VRena Playerは店舗でのプレイヤー体験に関する情報を提供します。ミニアプリアカウントは不要で、作成もされません。' },
+        { heading: '2. 利用', body: '一般情報は本ガイドをご覧ください。ゲーム、セッション、メンバーシップの最新情報は店舗スタッフにご確認ください。' },
+        { heading: '3. 提供と変更', body: 'サービス、安全、法的理由によりガイドを更新する場合があります。店舗の活動や提供状況も変更されることがあります。' },
+        { heading: '4. 準拠法と連絡先', body: 'ベトナム法を準拠法とします。サポート: contact@vre-vietnam.com または 0981 152 315。' },
       ] },
     },
   },
   fr: {
-    languageLabel: 'Langue', closeLabel: 'Fermer', legalNote: 'Ce document est affiché dans VRena Player et ne contient aucun lien menant hors de la Mini App.', legalAriaLabel: 'Documents juridiques', privacyLink: 'Politique de confidentialité', termsLink: "Conditions d’utilisation",
-    memberEyebrow: 'MEMBRE VRENA', readyTitle: 'Votre profil est prêt', readyGreeting: 'Bonjour {name}. Votre profil membre a été identifié de manière sécurisée dans VRena Player.', defaultPlayer: 'Joueur', memberPhone: 'Identité du profil',
-    profileBenefits: 'Avantages du profil', profileBenefitsBody: "Votre profil aide VRena à vous reconnaître et à protéger votre historique d’activité lorsque vous utilisez les services d’un établissement VRena.",
-    registerEyebrow: 'NOUVEAU PROFIL', registerTitle: 'Devenir membre', registerIntro: "Réservé aux personnes sans compte VRena existant. Cette fonction ne sert pas à associer un compte existant.",
-    phoneWhy: 'Comment votre profil est-il identifié ?', phoneWhyBody: 'VRena utilise uniquement votre identifiant Zalo propre à cette Mini App pour créer, protéger et reconnaître le profil. Aucun numéro ni e-mail n’est demandé.',
-    consentBeforePrivacy: 'Je demande volontairement un nouveau profil et accepte que VRena reçoive et utilise mon identifiant Zalo propre à cette Mini App aux fins indiquées. J’ai lu la ', consentBetweenLegal: ' et j’accepte les ', consentAfterTerms: '.',
-    registering: 'Inscription…', registerWithZalo: 'Créer mon profil VRena', continueWithoutRegistering: 'Plus tard, continuer à consulter',
-    welcomeTitle: 'Votre profil joueur VRena', welcomeBody: 'Découvrez les avantages du profil membre. Cette Mini App ne demande ni numéro de téléphone ni e-mail.',
-    identifyTitle: 'Identification du membre', identifyBody: 'Un profil unique permet à VRena de vous reconnaître lors des activités en établissement.', optionalTitle: 'Inscription facultative', optionalBody: 'La création utilise uniquement l’identifiant fourni et vérifié par Zalo pour cette Mini App.',
-    startRegistration: 'Devenir membre VRena', registrationDisclaimer: 'Uniquement pour un nouveau profil. Refuser ne bloque pas les autres contenus.', footer: 'Données protégées · Sans publicité · Sans navigation externe',
-    errors: {
-      zaloTimeout: 'Zalo ne répond pas. Fermez et rouvrez la Mini App.', sessionUnavailable: 'Impossible d’établir une session Zalo sécurisée. Rouvrez la Mini App.', serverTimeout: 'VRena met trop de temps à répondre. Réessayez.', networkUnavailable: 'Impossible de joindre VRena. Vérifiez votre connexion.', serviceUnavailable: 'Le service d’inscription VRena est temporairement indisponible.',
-      tooManyAttempts: 'Trop de tentatives. Attendez une minute avant de réessayer.', identityMismatch: 'La session Zalo ne correspond pas à cette inscription. Rouvrez la Mini App.', revokedAccount: 'Ce profil Zalo a été révoqué. Contactez VRena.', consentRequired: 'Acceptez la Politique de confidentialité et les Conditions d’utilisation avant de vous inscrire.', unknown: 'Impossible d’inscrire le profil VRena. Réessayez.',
-    },
+    languageLabel: 'Langue', closeLabel: 'Fermer', legalAriaLabel: 'Documents juridiques',
+    legalNote: 'Ce document est affiché dans VRena Player et ne contient aucun lien quittant la Mini App.',
+    privacyLink: 'Politique de confidentialité', termsLink: 'Conditions d’utilisation', eyebrow: 'GUIDE VRENA PLAYER',
+    title: 'Découvrez VRena Player', intro: 'Consultez les informations joueur et découvrez comment obtenir de l’aide dans un centre VRena. Aucun compte requis.',
+    noAccountTitle: 'Aucune inscription en ligne', noAccountBody: 'La Mini App ne demande ni téléphone, ni e-mail, ni identifiant utilisateur Zalo.',
+    venueHelpTitle: 'Aide sur place', venueHelpBody: 'Pour toute aide concernant l’adhésion, l’équipe VRena vous accompagne sur place.',
+    openGuide: 'Comment ça marche chez VRena', closeGuide: 'Masquer le guide', guideTitle: 'Dans un centre VRena',
+    guideSteps: ['Choisissez l’activité VR que vous souhaitez essayer.', 'Demandez conseil à l’équipe VRena pour les jeux ou l’adhésion.', 'Profitez de votre session sans compte Mini App.'],
+    disclaimer: 'Cette Mini App fournit uniquement des informations et ne crée ni ne lie de compte VRena.',
+    footer: 'Aucun compte · Aucune publicité · Aucune navigation externe',
     legal: {
-      privacyPolicy: { title: 'Politique de confidentialité VRena Player', updated: 'Mise à jour le 20 octobre 2026', sections: [
-        { heading: '1. Champ d’application', body: 'Cette politique explique comment VR ENTERTAINMENT CO., LTD. traite les données personnelles lorsqu’un utilisateur inscrit volontairement un nouveau profil dans VRena Player.' },
-        { heading: '2. Données traitées', body: 'Avec votre accord, VRena reçoit l’identifiant Zalo propre à la Mini App et les données techniques nécessaires à la création du profil. Numéro de téléphone, e-mail, contacts, caméra, micro et localisation ne sont pas demandés.' },
-        { heading: '3. Finalités', body: 'Les données servent à créer, identifier et protéger le profil, prévenir la fraude et assister l’utilisateur. L’e-mail n’est pas obligatoire.' },
-        { heading: '4. Consentement et choix', body: 'L’inscription est facultative. Le refus arrête uniquement la création du profil. Vous pouvez demander retrait, accès, rectification ou suppression selon la loi.' },
-        { heading: '5. Partage', body: 'VRena ne vend ni ne loue les données. Elles sont partagées uniquement avec les prestataires nécessaires ou les autorités lorsque la loi l’exige.' },
-        { heading: '6. Conservation et sécurité', body: 'VRena applique des mesures adaptées et conserve les données uniquement pendant la durée nécessaire ou légale.' },
-        { heading: '7. Contact', body: 'Demandes relatives aux données : contact@vre-vietnam.com ou 0981 152 315.' },
+      privacyPolicy: { title: 'Politique de confidentialité VRena Player', updated: 'Mise à jour le 31 octobre 2026', sections: [
+        { heading: '1. Champ d’application', body: 'VRena Player est une Mini App d’information exploitée par VR ENTERTAINMENT CO., LTD. Elle ne propose aucune inscription en ligne.' },
+        { heading: '2. Données traitées', body: 'La Mini App ne demande, ne reçoit et ne conserve ni téléphone, e-mail, contacts, caméra, microphone, localisation ou identifiant Zalo. Le choix de langue reste uniquement sur votre appareil.' },
+        { heading: '3. Fonctionnement', body: 'La Mini App n’appelle pas le service d’inscription VRena, n’affiche pas de publicité et ne redirige pas vers un site externe.' },
+        { heading: '4. Contact', body: 'Questions de confidentialité : contact@vre-vietnam.com ou 0981 152 315.' },
       ] },
-      termsAndConditions: { title: "Conditions d’utilisation VRena Player", updated: 'Mise à jour le 20 octobre 2026', sections: [
-        { heading: '1. Champ d’application', body: 'VRena Player est une Mini App de VR ENTERTAINMENT CO., LTD. Les informations sont accessibles sans inscription et un profil peut être créé volontairement avec l’identifiant Zalo propre à la Mini App.' },
-        { heading: '2. Autorisation et données', body: 'La Mini App ne demande pas l’accès au numéro de téléphone. Elle utilise uniquement l’identifiant Zalo vérifié après lecture et acceptation de ces documents.' },
-        { heading: '3. Choix de l’utilisateur', body: 'La création du profil est facultative et ne vaut pas consentement à la publicité ou à un usage sans rapport.' },
-        { heading: '4. Comptes utilisateur', body: 'Cette fonction crée uniquement un nouveau profil et ne relie pas un compte existant. Les utilisateurs existants doivent demander de l’aide au personnel VRena.' },
-        { heading: '5. Sécurité et partage', body: 'VRena applique des mesures raisonnables, ne vend ni ne loue les données et ne les partage que pour l’exploitation ou selon la loi.' },
-        { heading: '6. Modifications et disponibilité', body: 'La Mini App ou les conditions peuvent évoluer pour des raisons de service, sécurité ou droit, et être temporairement indisponibles pour maintenance ou protection.' },
-        { heading: '7. Droit applicable et contact', body: 'Le droit vietnamien s’applique. Contact : contact@vre-vietnam.com ou 0981 152 315.' },
+      termsAndConditions: { title: 'Conditions d’utilisation VRena Player', updated: 'Mise à jour le 31 octobre 2026', sections: [
+        { heading: '1. Service', body: 'VRena Player fournit des informations sur l’expérience joueur en centre. Aucun compte Mini App n’est requis ni créé.' },
+        { heading: '2. Utilisation', body: 'Consultez ce guide pour les informations générales et demandez à l’équipe sur place les informations actuelles sur les jeux, sessions ou adhésions.' },
+        { heading: '3. Disponibilité et modifications', body: 'VRena peut mettre à jour ce guide pour des raisons de service, de sécurité ou légales. Les activités et disponibilités peuvent changer.' },
+        { heading: '4. Droit applicable et contact', body: 'Le droit vietnamien s’applique. Assistance : contact@vre-vietnam.com ou 0981 152 315.' },
       ] },
     },
   },
   de: {
-    languageLabel: 'Sprache', closeLabel: 'Schließen', legalNote: 'Dieses Dokument wird in VRena Player angezeigt und enthält keine Links aus der Mini App heraus.', legalAriaLabel: 'Rechtliche Dokumente', privacyLink: 'Datenschutzerklärung', termsLink: 'Nutzungsbedingungen',
-    memberEyebrow: 'VRENA-MITGLIED', readyTitle: 'Dein Profil ist bereit', readyGreeting: 'Hallo {name}. Dein Mitgliedsprofil wurde in VRena Player sicher erkannt.', defaultPlayer: 'Spieler', memberPhone: 'Profilidentität',
-    profileBenefits: 'Profilvorteile', profileBenefitsBody: 'Das Profil hilft VRena, dich zu erkennen und deinen Aktivitätsverlauf bei der Nutzung eines VRena-Standorts zu schützen.',
-    registerEyebrow: 'NEUES PROFIL', registerTitle: 'Mitglied werden', registerIntro: 'Nur für Personen ohne bestehendes VRena-Konto. Diese Funktion verknüpft kein vorhandenes Konto.',
-    phoneWhy: 'Wie wird dein Profil erkannt?', phoneWhyBody: 'VRena verwendet nur deine Zalo-Nutzerkennung für diese Mini App, um das Profil zu erstellen, zu schützen und zu erkennen. Telefonnummer und E-Mail werden nicht angefragt.',
-    consentBeforePrivacy: 'Ich registriere freiwillig ein neues Profil und stimme zu, dass VRena meine Zalo-Nutzerkennung für diese Mini App für den genannten Zweck empfängt und verwendet. Ich habe die ', consentBetweenLegal: ' gelesen und akzeptiere die ', consentAfterTerms: '.',
-    registering: 'Registrierung…', registerWithZalo: 'Mein VRena-Profil erstellen', continueWithoutRegistering: 'Später, Informationen weiter ansehen',
-    welcomeTitle: 'Dein VRena-Spielerprofil', welcomeBody: 'Entdecke die Vorteile des Mitgliedsprofils. Diese Mini App fragt weder Telefonnummer noch E-Mail ab.',
-    identifyTitle: 'Mitgliedererkennung', identifyBody: 'Ein Profil hilft VRena, dich bei Aktivitäten am Standort zu erkennen.', optionalTitle: 'Registrierung ist freiwillig', optionalBody: 'Für die Profilerstellung wird nur die von Zalo für diese Mini App bereitgestellte und geprüfte Kennung verwendet.',
-    startRegistration: 'Als VRena-Mitglied registrieren', registrationDisclaimer: 'Nur für neue Profile. Eine Ablehnung beeinträchtigt keine anderen Inhalte.', footer: 'Geschützte Daten · Keine Werbung · Keine externe Navigation',
-    errors: {
-      zaloTimeout: 'Zalo antwortet nicht. Schließe und öffne die Mini App erneut.', sessionUnavailable: 'Eine sichere Zalo-Sitzung konnte nicht hergestellt werden.', serverTimeout: 'VRena antwortet zu langsam. Bitte erneut versuchen.', networkUnavailable: 'VRena ist nicht erreichbar. Prüfe die Verbindung.', serviceUnavailable: 'Die VRena-Registrierung ist vorübergehend nicht verfügbar.',
-      tooManyAttempts: 'Zu viele Versuche. Bitte eine Minute warten.', identityMismatch: 'Die Zalo-Sitzung passt nicht zu dieser Registrierung.', revokedAccount: 'Dieses Zalo-Profil wurde widerrufen. Bitte VRena kontaktieren.', consentRequired: 'Bitte vor der Registrierung Datenschutzerklärung und Nutzungsbedingungen akzeptieren.', unknown: 'Das VRena-Profil konnte nicht registriert werden.',
-    },
+    languageLabel: 'Sprache', closeLabel: 'Schließen', legalAriaLabel: 'Rechtliche Dokumente',
+    legalNote: 'Dieses Dokument wird in VRena Player angezeigt und enthält keinen Link außerhalb der Mini App.',
+    privacyLink: 'Datenschutzerklärung', termsLink: 'Nutzungsbedingungen', eyebrow: 'VRENA PLAYER GUIDE',
+    title: 'VRena Player entdecken', intro: 'Spielerinformationen und Hilfe vor Ort bei VRena. Kein Konto erforderlich.',
+    noAccountTitle: 'Keine Online-Registrierung', noAccountBody: 'Die Mini App fragt weder Telefonnummer, E-Mail noch Zalo-Nutzerkennung ab.',
+    venueHelpTitle: 'Hilfe vor Ort', venueHelpBody: 'Bei Fragen zur Mitgliedschaft hilft das VRena-Team persönlich vor Ort.',
+    openGuide: 'So funktioniert es bei VRena', closeGuide: 'Guide ausblenden', guideTitle: 'Bei VRena vor Ort',
+    guideSteps: ['Wähle die gewünschte VR-Aktivität.', 'Frage das VRena-Team nach Spiel- oder Mitgliedschaftsberatung.', 'Genieße deine Session ohne Mini-App-Konto.'],
+    disclaimer: 'Diese Mini App informiert nur und erstellt oder verknüpft kein VRena-Konto.',
+    footer: 'Kein Konto · Keine Werbung · Keine externe Navigation',
     legal: {
-      privacyPolicy: { title: 'VRena Player Datenschutzerklärung', updated: 'Aktualisiert am 20. Oktober 2026', sections: [
-        { heading: '1. Geltungsbereich', body: 'Diese Erklärung beschreibt, wie VR ENTERTAINMENT CO., LTD. personenbezogene Daten bei der freiwilligen Registrierung eines neuen Profils in VRena Player verarbeitet.' },
-        { heading: '2. Verarbeitete Daten', body: 'Mit Zustimmung erhält VRena die Zalo-Nutzerkennung für diese Mini App und technische Prüfdaten zur Profilerstellung. Telefonnummer, E-Mail, Kontakte, Kamera, Mikrofon und Standort werden nicht angefragt.' },
-        { heading: '3. Zweck', body: 'Die Daten dienen der Erstellung, Erkennung und Sicherung des Profils, der Betrugsprävention und dem Support. E-Mail ist nicht erforderlich.' },
-        { heading: '4. Einwilligung und Wahl', body: 'Die Registrierung ist freiwillig. Eine Ablehnung stoppt nur die Profilerstellung. Nach geltendem Recht können Widerruf, Auskunft, Berichtigung oder Löschung verlangt werden.' },
-        { heading: '5. Weitergabe', body: 'VRena verkauft oder vermietet keine Daten. Eine Weitergabe erfolgt nur an notwendige Dienstleister oder gesetzlich zuständige Behörden.' },
-        { heading: '6. Speicherung und Sicherheit', body: 'VRena setzt angemessene Schutzmaßnahmen ein und speichert Daten nur so lange wie für Zweck oder Rechtspflicht nötig.' },
-        { heading: '7. Kontakt', body: 'Datenschutzanfragen: contact@vre-vietnam.com oder 0981 152 315.' },
+      privacyPolicy: { title: 'VRena Player Datenschutzerklärung', updated: 'Aktualisiert am 31. Oktober 2026', sections: [
+        { heading: '1. Geltungsbereich', body: 'VRena Player ist eine Informations-Mini-App von VR ENTERTAINMENT CO., LTD. Eine Online-Kontoregistrierung wird nicht angeboten.' },
+        { heading: '2. Verarbeitete Daten', body: 'Telefonnummer, E-Mail, Kontakte, Kamera, Mikrofon, Standort und Zalo-Nutzerkennung werden weder angefragt noch empfangen oder gespeichert. Die Sprachauswahl bleibt nur auf deinem Gerät.' },
+        { heading: '3. Betrieb', body: 'Die Mini App ruft keinen VRena-Registrierungsdienst auf, zeigt keine Werbung und leitet nicht auf externe Websites weiter.' },
+        { heading: '4. Kontakt', body: 'Datenschutzfragen: contact@vre-vietnam.com oder 0981 152 315.' },
       ] },
-      termsAndConditions: { title: 'VRena Player Nutzungsbedingungen', updated: 'Aktualisiert am 20. Oktober 2026', sections: [
-        { heading: '1. Geltungsbereich', body: 'VRena Player ist eine Mini App von VR ENTERTAINMENT CO., LTD. Informationen sind ohne Registrierung verfügbar; ein Profil kann freiwillig mit der Zalo-Nutzerkennung für diese Mini App erstellt werden.' },
-        { heading: '2. Berechtigung und Daten', body: 'Die Mini App fragt keine Telefonnummernberechtigung ab. Nach Zustimmung wird nur die geprüfte Zalo-Nutzerkennung für diese Mini App verwendet.' },
-        { heading: '3. Wahl des Nutzers', body: 'Die Profilerstellung ist freiwillig und bedeutet keine Einwilligung in Werbung oder sachfremde Datennutzung.' },
-        { heading: '4. Benutzerkonten', body: 'Diese Funktion erstellt nur ein neues Profil und verknüpft kein bestehendes Konto. Bestehende Nutzer wenden sich an das Personal vor Ort.' },
-        { heading: '5. Sicherheit und Weitergabe', body: 'VRena nutzt angemessene Schutzmaßnahmen, verkauft oder vermietet keine Daten und gibt sie nur für Betrieb oder gesetzliche Anforderungen weiter.' },
-        { heading: '6. Änderungen und Verfügbarkeit', body: 'Mini App und Bedingungen können aus Service-, Sicherheits- oder Rechtsgründen geändert und für Wartung oder Schutz vorübergehend ausgesetzt werden.' },
-        { heading: '7. Recht und Kontakt', body: 'Es gilt vietnamesisches Recht. Kontakt: contact@vre-vietnam.com oder 0981 152 315.' },
+      termsAndConditions: { title: 'VRena Player Nutzungsbedingungen', updated: 'Aktualisiert am 31. Oktober 2026', sections: [
+        { heading: '1. Dienst', body: 'VRena Player informiert über das Spielerlebnis vor Ort. Ein Mini-App-Konto ist nicht erforderlich und wird nicht erstellt.' },
+        { heading: '2. Nutzung', body: 'Nutze den Guide für allgemeine Informationen und frage das Team vor Ort nach aktuellen Spielen, Sessions oder Mitgliedschaften.' },
+        { heading: '3. Verfügbarkeit und Änderungen', body: 'VRena kann den Guide aus Service-, Sicherheits- oder Rechtsgründen aktualisieren. Aktivitäten und Verfügbarkeit vor Ort können sich ändern.' },
+        { heading: '4. Recht und Kontakt', body: 'Es gilt vietnamesisches Recht. Support: contact@vre-vietnam.com oder 0981 152 315.' },
       ] },
     },
   },
   it: {
-    languageLabel: 'Lingua', closeLabel: 'Chiudi', legalNote: 'Questo documento è mostrato dentro VRena Player e non contiene link che portano fuori dalla Mini App.', legalAriaLabel: 'Documenti legali', privacyLink: 'Informativa sulla privacy', termsLink: 'Termini di utilizzo',
-    memberEyebrow: 'MEMBRO VRENA', readyTitle: 'Il tuo profilo è pronto', readyGreeting: 'Ciao {name}. Il tuo profilo membro è stato riconosciuto in modo sicuro in VRena Player.', defaultPlayer: 'Giocatore', memberPhone: 'Identità del profilo',
-    profileBenefits: 'Vantaggi del profilo', profileBenefitsBody: 'Il profilo aiuta VRena a riconoscerti e a proteggere lo storico delle attività quando usi i servizi in una sede VRena.',
-    registerEyebrow: 'NUOVO PROFILO', registerTitle: 'Diventa membro', registerIntro: 'Solo per chi non possiede già un account VRena. Questa funzione non collega un account esistente.',
-    phoneWhy: 'Come viene identificato il profilo?', phoneWhyBody: 'VRena usa solo l’identificativo Zalo dedicato a questa Mini App per creare, proteggere e riconoscere il profilo. Non richiede telefono o e-mail.',
-    consentBeforePrivacy: 'Richiedo volontariamente un nuovo profilo e accetto che VRena riceva e utilizzi il mio identificativo Zalo dedicato a questa Mini App per lo scopo indicato. Ho letto la ', consentBetweenLegal: ' e accetto i ', consentAfterTerms: '.',
-    registering: 'Registrazione…', registerWithZalo: 'Crea il mio profilo VRena', continueWithoutRegistering: 'Non ora, continua a vedere le informazioni',
-    welcomeTitle: 'Il tuo profilo giocatore VRena', welcomeBody: 'Scopri i vantaggi del profilo membro. Questa Mini App non richiede numero di telefono o e-mail.',
-    identifyTitle: 'Riconoscimento del membro', identifyBody: 'Un solo profilo aiuta VRena a riconoscerti durante le attività in sede.', optionalTitle: 'Registrazione facoltativa', optionalBody: 'La creazione usa solo l’identificativo fornito e verificato da Zalo per questa Mini App.',
-    startRegistration: 'Registrati come membro VRena', registrationDisclaimer: 'Solo per nuovi profili. Rifiutare non interrompe gli altri contenuti.', footer: 'Dati protetti · Nessuna pubblicità · Nessuna navigazione esterna',
-    errors: {
-      zaloTimeout: 'Zalo non risponde. Chiudi e riapri la Mini App.', sessionUnavailable: 'Impossibile avviare una sessione Zalo sicura.', serverTimeout: 'VRena impiega troppo tempo a rispondere. Riprova.', networkUnavailable: 'Impossibile contattare VRena. Controlla la connessione.', serviceUnavailable: 'La registrazione VRena è temporaneamente non disponibile.',
-      tooManyAttempts: 'Troppi tentativi. Attendi un minuto.', identityMismatch: 'La sessione Zalo non corrisponde a questa registrazione.', revokedAccount: 'Questo profilo Zalo è stato revocato. Contatta VRena.', consentRequired: 'Accetta Informativa sulla privacy e Termini di utilizzo prima di registrarti.', unknown: 'Impossibile registrare il profilo VRena. Riprova.',
-    },
+    languageLabel: 'Lingua', closeLabel: 'Chiudi', legalAriaLabel: 'Documenti legali',
+    legalNote: 'Questo documento è mostrato in VRena Player e non contiene link che portano fuori dalla Mini App.',
+    privacyLink: 'Informativa sulla privacy', termsLink: 'Termini di utilizzo', eyebrow: 'GUIDA VRENA PLAYER',
+    title: 'Scopri VRena Player', intro: 'Consulta le informazioni per i giocatori e scopri come ricevere assistenza in una sede VRena. Nessun account richiesto.',
+    noAccountTitle: 'Nessuna registrazione online', noAccountBody: 'La Mini App non richiede telefono, e-mail o identificativo utente Zalo.',
+    venueHelpTitle: 'Assistenza in sede', venueHelpBody: 'Per assistenza sull’iscrizione, il team VRena ti aiuta di persona.',
+    openGuide: 'Come funziona da VRena', closeGuide: 'Nascondi la guida', guideTitle: 'In una sede VRena',
+    guideSteps: ['Scegli l’attività VR che vuoi provare.', 'Chiedi al team VRena consigli su giochi o iscrizione.', 'Goditi la sessione senza un account Mini App.'],
+    disclaimer: 'Questa Mini App fornisce solo informazioni e non crea né collega account VRena.',
+    footer: 'Nessun account · Nessuna pubblicità · Nessuna navigazione esterna',
     legal: {
-      privacyPolicy: { title: 'Informativa sulla privacy VRena Player', updated: 'Aggiornata il 20 ottobre 2026', sections: [
-        { heading: '1. Ambito', body: 'Questa informativa spiega come VR ENTERTAINMENT CO., LTD. tratta i dati personali quando un utente registra volontariamente un nuovo profilo in VRena Player.' },
-        { heading: '2. Dati trattati', body: 'Con il consenso, VRena riceve l’identificativo Zalo dedicato alla Mini App e i dati tecnici necessari alla creazione del profilo. Non vengono richiesti telefono, e-mail, contatti, fotocamera, microfono o posizione.' },
-        { heading: '3. Finalità', body: 'I dati servono a creare, identificare e proteggere il profilo, prevenire frodi e assistere l’utente. L’e-mail non è obbligatoria.' },
-        { heading: '4. Consenso e scelta', body: 'La registrazione è facoltativa. Il rifiuto interrompe solo la creazione del profilo. Puoi chiedere revoca, accesso, rettifica o cancellazione secondo la legge.' },
-        { heading: '5. Condivisione', body: 'VRena non vende né affitta i dati. Li condivide solo con fornitori necessari o autorità quando richiesto dalla legge.' },
-        { heading: '6. Conservazione e sicurezza', body: 'VRena adotta misure adeguate e conserva i dati solo per il tempo necessario allo scopo o agli obblighi di legge.' },
-        { heading: '7. Contatti', body: 'Richieste sui dati: contact@vre-vietnam.com o 0981 152 315.' },
+      privacyPolicy: { title: 'Informativa sulla privacy VRena Player', updated: 'Aggiornata il 31 ottobre 2026', sections: [
+        { heading: '1. Ambito', body: 'VRena Player è una Mini App informativa gestita da VR ENTERTAINMENT CO., LTD. e non offre registrazione online.' },
+        { heading: '2. Dati trattati', body: 'La Mini App non richiede, riceve o conserva telefono, e-mail, contatti, fotocamera, microfono, posizione o identificativo Zalo. La lingua scelta resta solo sul dispositivo.' },
+        { heading: '3. Funzionamento', body: 'La Mini App non chiama il servizio di registrazione VRena, non mostra pubblicità e non rimanda a siti esterni.' },
+        { heading: '4. Contatti', body: 'Domande sulla privacy: contact@vre-vietnam.com o 0981 152 315.' },
       ] },
-      termsAndConditions: { title: 'Termini di utilizzo VRena Player', updated: 'Aggiornati il 20 ottobre 2026', sections: [
-        { heading: '1. Ambito', body: 'VRena Player è una Mini App di VR ENTERTAINMENT CO., LTD. Le informazioni sono visibili senza registrazione e un profilo può essere creato volontariamente con l’identificativo Zalo dedicato alla Mini App.' },
-        { heading: '2. Permesso e dati', body: 'La Mini App non richiede l’accesso al numero di telefono. Dopo il consenso usa solo l’identificativo Zalo verificato per questa Mini App.' },
-        { heading: '3. Scelta dell’utente', body: 'La creazione del profilo è facoltativa e non implica consenso alla pubblicità o a usi non pertinenti.' },
-        { heading: '4. Account utente', body: 'Questa funzione crea solo un nuovo profilo e non collega account esistenti. Gli utenti esistenti devono chiedere assistenza allo staff VRena.' },
-        { heading: '5. Sicurezza e condivisione', body: 'VRena adotta misure ragionevoli, non vende né affitta dati e li condivide solo per il funzionamento o per obblighi di legge.' },
-        { heading: '6. Modifiche e disponibilità', body: 'Mini App e termini possono cambiare per servizio, sicurezza o legge ed essere sospesi temporaneamente per manutenzione o protezione.' },
-        { heading: '7. Legge e contatti', body: 'Si applica la legge vietnamita. Contatti: contact@vre-vietnam.com o 0981 152 315.' },
+      termsAndConditions: { title: 'Termini di utilizzo VRena Player', updated: 'Aggiornati il 31 ottobre 2026', sections: [
+        { heading: '1. Servizio', body: 'VRena Player fornisce informazioni sull’esperienza in sede. Non richiede né crea un account Mini App.' },
+        { heading: '2. Utilizzo', body: 'Usa la guida per informazioni generali e chiedi al team in sede i dettagli aggiornati su giochi, sessioni o iscrizioni.' },
+        { heading: '3. Disponibilità e modifiche', body: 'VRena può aggiornare la guida per motivi di servizio, sicurezza o legge. Attività e disponibilità possono cambiare.' },
+        { heading: '4. Legge e contatti', body: 'Si applica la legge vietnamita. Assistenza: contact@vre-vietnam.com o 0981 152 315.' },
       ] },
     },
   },
