@@ -2,6 +2,7 @@
 
 Independent Zalo Mini App clients used by VR Entertainment:
 
+- `booking/` — customer venue selection and ticket booking for Mini App ID `2401555387563548266`.
 - `employee-attendance/` — staff attendance and workplace verification.
 - `player-auth/` — account-free VRena Player information guide.
 
