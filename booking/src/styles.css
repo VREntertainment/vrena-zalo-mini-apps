@@ -54,7 +54,6 @@ button { -webkit-tap-highlight-color: transparent; }
 .booking-card { margin-top: 18px; padding: 22px; border-radius: 24px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 36px rgba(2, 14, 14, 0.055); }
 .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .section-heading h2 { margin: 0; font-family: "League Spartan", Inter, sans-serif; font-size: 1.65rem; line-height: 1; }
-.section-heading p { margin: 8px 0 0; color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
 .step-badge { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; background: #edf2ff; color: var(--purple-dark); font-size: 0.75rem; font-weight: 800; }
 .venue-list { display: grid; gap: 10px; margin-top: 18px; }
 .venue-card { position: relative; width: 100%; min-height: 126px; display: flex; gap: 13px; align-items: flex-start; padding: 16px; text-align: left; color: var(--ink); border: 1px solid var(--border); border-radius: 17px; background: #fafbfb; cursor: pointer; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
