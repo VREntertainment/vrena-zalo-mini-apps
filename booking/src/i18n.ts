@@ -7,7 +7,6 @@ type Copy = {
   title: string
   intro: string
   venueTitle: string
-  venueHint: string
   haDoAddress: string
   haDoHours: string
   thaoDienAddress: string
@@ -26,8 +25,8 @@ type Copy = {
 export const copy: Record<LanguageCode, Copy> = {
   en: {
     languageName: 'English', eyebrow: 'VRENA TICKETS', title: 'Book your VR experience',
-    intro: 'VRena is a social VR playground for immersive games and shared experiences.',
-    venueTitle: 'Choose a venue', venueHint: 'Your selection opens the matching live availability.',
+    intro: 'VRena is a social VR playground for immersive games and shared experiences. Unlike stationary VR, you move freely through shared virtual worlds.',
+    venueTitle: 'Choose a venue',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, District 10, Ho Chi Minh City', haDoHours: 'Open daily · 9:00–22:00',
     thaoDienAddress: '8–10 Street 54, An Khánh, Ho Chi Minh City', thaoDienHours: 'Open daily · 15:30–23:00',
     selected: 'Selected', book: 'Continue to tickets',
@@ -37,8 +36,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   vi: {
     languageName: 'Tiếng Việt', eyebrow: 'VÉ VRENA', title: 'Đặt trải nghiệm VR của bạn',
-    intro: 'VRena là sân chơi thực tế ảo cộng đồng dành cho trò chơi nhập vai và trải nghiệm cùng nhau.',
-    venueTitle: 'Chọn địa điểm', venueHint: 'Lựa chọn của bạn sẽ mở lịch trống trực tiếp của địa điểm.',
+    intro: 'VRena là sân chơi thực tế ảo cộng đồng dành cho trò chơi nhập vai và trải nghiệm cùng nhau. Khác với VR cố định, bạn tự do di chuyển trong thế giới ảo cùng mọi người.',
+    venueTitle: 'Chọn địa điểm',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Quận 10, TP.HCM', haDoHours: 'Mở hằng ngày · 09:00–22:00',
     thaoDienAddress: '8–10 Đường số 54, An Khánh, TP.HCM', thaoDienHours: 'Mở hằng ngày · 15:30–23:00',
     selected: 'Đã chọn', book: 'Tiếp tục đặt vé',
@@ -48,8 +47,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   ko: {
     languageName: '한국어', eyebrow: 'VRENA 티켓', title: 'VR 체험을 예약하세요',
-    intro: 'VRena는 몰입형 게임과 함께 즐기는 경험을 위한 소셜 VR 플레이그라운드입니다.',
-    venueTitle: '지점 선택', venueHint: '선택한 지점의 실시간 예약 가능 시간이 열립니다.',
+    intro: 'VRena는 몰입형 게임과 함께 즐기는 경험을 위한 소셜 VR 플레이그라운드입니다. 제자리에서 즐기는 VR과 달리, 함께하는 가상 세계를 자유롭게 움직입니다.',
+    venueTitle: '지점 선택',
     haDoAddress: '호찌민시 10군, Hà Đô Centrosa, Iris 4', haDoHours: '매일 영업 · 09:00–22:00',
     thaoDienAddress: '호찌민시 An Khánh, 54번 도로 8–10', thaoDienHours: '매일 영업 · 15:30–23:00',
     selected: '선택됨', book: '티켓 예약 계속',
@@ -59,8 +58,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   ja: {
     languageName: '日本語', eyebrow: 'VRENA チケット', title: 'VR体験を予約',
-    intro: 'VRenaは、没入型ゲームとみんなで楽しむ体験のためのソーシャルVRプレイグラウンドです。',
-    venueTitle: '店舗を選択', venueHint: '選択した店舗の最新の空き状況を開きます。',
+    intro: 'VRenaは、没入型ゲームとみんなで楽しむ体験のためのソーシャルVRプレイグラウンドです。定位置で遊ぶVRとは異なり、仲間と共有する仮想世界を自由に動けます。',
+    venueTitle: '店舗を選択',
     haDoAddress: 'ホーチミン市10区、Hà Đô Centrosa、Iris 4', haDoHours: '毎日営業 · 9:00–22:00',
     thaoDienAddress: 'ホーチミン市An Khánh、54番通り8–10', thaoDienHours: '毎日営業 · 15:30–23:00',
     selected: '選択中', book: 'チケット予約へ',
@@ -70,8 +69,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   fr: {
     languageName: 'Français', eyebrow: 'BILLETS VRENA', title: 'Réservez votre expérience VR',
-    intro: 'VRena est un terrain de jeu VR social dédié aux jeux immersifs et aux expériences à partager.',
-    venueTitle: 'Choisir un site', venueHint: 'Votre choix ouvre les disponibilités en direct du site.',
+    intro: 'VRena est un terrain de jeu VR social dédié aux jeux immersifs et aux expériences à partager. Contrairement à la VR statique, vous vous déplacez librement dans des mondes virtuels partagés.',
+    venueTitle: 'Choisir un site',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, District 10, Hô Chi Minh-Ville', haDoHours: 'Ouvert tous les jours · 9h–22h',
     thaoDienAddress: '8–10 rue 54, An Khánh, Hô Chi Minh-Ville', thaoDienHours: 'Ouvert tous les jours · 15h30–23h',
     selected: 'Sélectionné', book: 'Continuer vers les billets',
@@ -81,8 +80,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   de: {
     languageName: 'Deutsch', eyebrow: 'VRENA TICKETS', title: 'VR-Erlebnis buchen',
-    intro: 'VRena ist ein sozialer VR-Spielplatz für immersive Spiele und gemeinsame Erlebnisse.',
-    venueTitle: 'Standort wählen', venueHint: 'Deine Auswahl öffnet die aktuelle Verfügbarkeit des Standorts.',
+    intro: 'VRena ist ein sozialer VR-Spielplatz für immersive Spiele und gemeinsame Erlebnisse. Anders als bei stationärer VR bewegst du dich frei durch gemeinsame virtuelle Welten.',
+    venueTitle: 'Standort wählen',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Bezirk 10, Ho-Chi-Minh-Stadt', haDoHours: 'Täglich geöffnet · 09:00–22:00',
     thaoDienAddress: 'Straße 54, Nr. 8–10, An Khánh, Ho-Chi-Minh-Stadt', thaoDienHours: 'Täglich geöffnet · 15:30–23:00',
     selected: 'Ausgewählt', book: 'Weiter zur Buchung',
@@ -92,8 +91,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   it: {
     languageName: 'Italiano', eyebrow: 'BIGLIETTI VRENA', title: 'Prenota la tua esperienza VR',
-    intro: 'VRena è uno spazio VR sociale per giochi immersivi ed esperienze da condividere.',
-    venueTitle: 'Scegli una sede', venueHint: 'La selezione apre la disponibilità aggiornata della sede.',
+    intro: 'VRena è uno spazio VR sociale per giochi immersivi ed esperienze da condividere. A differenza della VR da fermi, ti muovi liberamente in mondi virtuali condivisi.',
+    venueTitle: 'Scegli una sede',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Distretto 10, Ho Chi Minh City', haDoHours: 'Aperto ogni giorno · 09:00–22:00',
     thaoDienAddress: '8–10 Street 54, An Khánh, Ho Chi Minh City', thaoDienHours: 'Aperto ogni giorno · 15:30–23:00',
     selected: 'Selezionato', book: 'Continua ai biglietti',
@@ -103,8 +102,8 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   zh: {
     languageName: '中文', eyebrow: 'VRENA 门票', title: '预订您的 VR 体验',
-    intro: 'VRena 是一个社交 VR 乐园，提供沉浸式游戏和共享体验。',
-    venueTitle: '选择门店', venueHint: '系统将打开所选门店的实时可预约时间。',
+    intro: 'VRena 是一个社交 VR 乐园，提供沉浸式游戏和共享体验。与固定站位的 VR 不同，您可以在共享的虚拟世界中自由移动。',
+    venueTitle: '选择门店',
     haDoAddress: '胡志明市第十郡 Hà Đô Centrosa，Iris 4', haDoHours: '每日营业 · 09:00–22:00',
     thaoDienAddress: '胡志明市 An Khánh，54 号街 8–10 号', thaoDienHours: '每日营业 · 15:30–23:00',
     selected: '已选择', book: '继续预订门票',

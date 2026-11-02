@@ -68,7 +68,6 @@ export default function App() {
         <div className="section-heading">
           <div>
             <h2 id="venue-title">{text.venueTitle}</h2>
-            <p>{text.venueHint}</p>
           </div>
           <span className="step-badge">1 / 2</span>
         </div>
