@@ -1,0 +1,18 @@
+{
+  "app": {
+    "title": "VRena Booking",
+    "headerTitle": "VRena Booking",
+    "headerColor": "#FAFBFB",
+    "textColor": "black",
+    "statusBarColor": "#FAFBFB",
+    "leftButton": "none",
+    "actionBarHidden": false,
+    "hideIOSSafeAreaBottom": true,
+    "statusBar": "normal"
+  },
+  "debug": false,
+  "listCSS": ["assets/index.css"],
+  "listSyncJS": ["assets/index.module.js"],
+  "listAsyncJS": [],
+  "pages": []
+}
