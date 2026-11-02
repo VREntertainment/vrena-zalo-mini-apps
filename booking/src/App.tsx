@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { copy, initialLanguage, languageCodes, type LanguageCode } from './i18n'
 
 type VenueId = 'ha-do-centrosa' | 'cafe-des-stagiaires'
@@ -26,8 +26,6 @@ export default function App() {
   const [venue, setVenue] = useState<VenueId>('ha-do-centrosa')
   const [error, setError] = useState('')
   const text = copy[language]
-  const activeVenue = useMemo(() => venues.find((item) => item.id === venue)!, [venue])
-
   function changeLanguage(next: LanguageCode) {
     window.localStorage.setItem('vrena-booking-language', next)
     setLanguage(next)
@@ -61,9 +59,6 @@ export default function App() {
       </header>
 
       <section className="hero">
-        <div className="hero-mark" aria-hidden="true">
-          <img src="./brand/vrena-mark-gradient.svg" alt="" />
-        </div>
         <span className="eyebrow">{text.eyebrow}</span>
         <h1>{text.title}</h1>
         <p>{text.intro}</p>
@@ -110,16 +105,7 @@ export default function App() {
           <span>{text.book}</span>
           <span aria-hidden="true">→</span>
         </button>
-        <p className="destination-note">{activeVenue.name}</p>
       </section>
-
-      <section className="trust-grid" aria-label="Booking information">
-        <article><span aria-hidden="true">✓</span><p>{text.confirmed}</p></article>
-        <article><span aria-hidden="true">✓</span><p>{text.accountOptional}</p></article>
-        <article><span aria-hidden="true">✓</span><p>{text.insideZalo}</p></article>
-      </section>
-
-      <p className="booking-note">{text.bookingNote}</p>
 
       <footer>
         <button type="button" onClick={() => void openInsideZalo(PRIVACY_URL)}>{text.privacy}</button>

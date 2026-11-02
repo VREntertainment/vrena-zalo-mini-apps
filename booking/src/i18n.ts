@@ -26,7 +26,7 @@ type Copy = {
 export const copy: Record<LanguageCode, Copy> = {
   en: {
     languageName: 'English', eyebrow: 'VRENA TICKETS', title: 'Book your VR experience',
-    intro: 'Choose a VRena venue, then continue to the secure ticket form without leaving Zalo.',
+    intro: 'VRena is a social VR playground for immersive games and shared experiences.',
     venueTitle: 'Choose a venue', venueHint: 'Your selection opens the matching live availability.',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, District 10, Ho Chi Minh City', haDoHours: 'Open daily · 9:00–22:00',
     thaoDienAddress: '8–10 Street 54, An Khánh, Ho Chi Minh City', thaoDienHours: 'Open daily · 15:30–23:00',
@@ -37,7 +37,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   vi: {
     languageName: 'Tiếng Việt', eyebrow: 'VÉ VRENA', title: 'Đặt trải nghiệm VR của bạn',
-    intro: 'Chọn địa điểm VRena, sau đó tiếp tục đến biểu mẫu đặt vé an toàn ngay trong Zalo.',
+    intro: 'VRena là sân chơi thực tế ảo cộng đồng dành cho trò chơi nhập vai và trải nghiệm cùng nhau.',
     venueTitle: 'Chọn địa điểm', venueHint: 'Lựa chọn của bạn sẽ mở lịch trống trực tiếp của địa điểm.',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Quận 10, TP.HCM', haDoHours: 'Mở hằng ngày · 09:00–22:00',
     thaoDienAddress: '8–10 Đường số 54, An Khánh, TP.HCM', thaoDienHours: 'Mở hằng ngày · 15:30–23:00',
@@ -48,7 +48,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   ko: {
     languageName: '한국어', eyebrow: 'VRENA 티켓', title: 'VR 체험을 예약하세요',
-    intro: 'VRena 지점을 선택한 뒤 Zalo 안에서 안전한 티켓 예약을 계속하세요.',
+    intro: 'VRena는 몰입형 게임과 함께 즐기는 경험을 위한 소셜 VR 플레이그라운드입니다.',
     venueTitle: '지점 선택', venueHint: '선택한 지점의 실시간 예약 가능 시간이 열립니다.',
     haDoAddress: '호찌민시 10군, Hà Đô Centrosa, Iris 4', haDoHours: '매일 영업 · 09:00–22:00',
     thaoDienAddress: '호찌민시 An Khánh, 54번 도로 8–10', thaoDienHours: '매일 영업 · 15:30–23:00',
@@ -59,7 +59,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   ja: {
     languageName: '日本語', eyebrow: 'VRENA チケット', title: 'VR体験を予約',
-    intro: 'VRenaの店舗を選び、Zalo内の安全なチケットフォームで予約を続けてください。',
+    intro: 'VRenaは、没入型ゲームとみんなで楽しむ体験のためのソーシャルVRプレイグラウンドです。',
     venueTitle: '店舗を選択', venueHint: '選択した店舗の最新の空き状況を開きます。',
     haDoAddress: 'ホーチミン市10区、Hà Đô Centrosa、Iris 4', haDoHours: '毎日営業 · 9:00–22:00',
     thaoDienAddress: 'ホーチミン市An Khánh、54番通り8–10', thaoDienHours: '毎日営業 · 15:30–23:00',
@@ -70,7 +70,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   fr: {
     languageName: 'Français', eyebrow: 'BILLETS VRENA', title: 'Réservez votre expérience VR',
-    intro: 'Choisissez un site VRena, puis poursuivez vers le formulaire sécurisé sans quitter Zalo.',
+    intro: 'VRena est un terrain de jeu VR social dédié aux jeux immersifs et aux expériences à partager.',
     venueTitle: 'Choisir un site', venueHint: 'Votre choix ouvre les disponibilités en direct du site.',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, District 10, Hô Chi Minh-Ville', haDoHours: 'Ouvert tous les jours · 9h–22h',
     thaoDienAddress: '8–10 rue 54, An Khánh, Hô Chi Minh-Ville', thaoDienHours: 'Ouvert tous les jours · 15h30–23h',
@@ -81,7 +81,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   de: {
     languageName: 'Deutsch', eyebrow: 'VRENA TICKETS', title: 'VR-Erlebnis buchen',
-    intro: 'Wähle einen VRena-Standort und buche über das sichere Formular, ohne Zalo zu verlassen.',
+    intro: 'VRena ist ein sozialer VR-Spielplatz für immersive Spiele und gemeinsame Erlebnisse.',
     venueTitle: 'Standort wählen', venueHint: 'Deine Auswahl öffnet die aktuelle Verfügbarkeit des Standorts.',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Bezirk 10, Ho-Chi-Minh-Stadt', haDoHours: 'Täglich geöffnet · 09:00–22:00',
     thaoDienAddress: 'Straße 54, Nr. 8–10, An Khánh, Ho-Chi-Minh-Stadt', thaoDienHours: 'Täglich geöffnet · 15:30–23:00',
@@ -92,7 +92,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   it: {
     languageName: 'Italiano', eyebrow: 'BIGLIETTI VRENA', title: 'Prenota la tua esperienza VR',
-    intro: 'Scegli una sede VRena e continua nel modulo sicuro senza uscire da Zalo.',
+    intro: 'VRena è uno spazio VR sociale per giochi immersivi ed esperienze da condividere.',
     venueTitle: 'Scegli una sede', venueHint: 'La selezione apre la disponibilità aggiornata della sede.',
     haDoAddress: 'Iris 4, Hà Đô Centrosa, Distretto 10, Ho Chi Minh City', haDoHours: 'Aperto ogni giorno · 09:00–22:00',
     thaoDienAddress: '8–10 Street 54, An Khánh, Ho Chi Minh City', thaoDienHours: 'Aperto ogni giorno · 15:30–23:00',
@@ -103,7 +103,7 @@ export const copy: Record<LanguageCode, Copy> = {
   },
   zh: {
     languageName: '中文', eyebrow: 'VRENA 门票', title: '预订您的 VR 体验',
-    intro: '选择 VRena 门店，然后在 Zalo 内继续安全的门票预订。',
+    intro: 'VRena 是一个社交 VR 乐园，提供沉浸式游戏和共享体验。',
     venueTitle: '选择门店', venueHint: '系统将打开所选门店的实时可预约时间。',
     haDoAddress: '胡志明市第十郡 Hà Đô Centrosa，Iris 4', haDoHours: '每日营业 · 09:00–22:00',
     thaoDienAddress: '胡志明市 An Khánh，54 号街 8–10 号', thaoDienHours: '每日营业 · 15:30–23:00',
