@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { copy, initialLanguage, languageCodes, type LanguageCode } from './i18n'
+import { legalCopy, type LegalDocument } from './legal'
 
 type VenueId = 'ha-do-centrosa' | 'cafe-des-stagiaires'
 
 const BOOKING_BASE_URL = 'https://booking.vre-vietnam.com/tickets'
-const PRIVACY_URL = 'https://www.vre-vietnam.com/privacy-policy'
-const TERMS_URL = 'https://www.vre-vietnam.com/terms-and-conditions'
 
 const venues: Array<{ id: VenueId; name: string }> = [
   { id: 'ha-do-centrosa', name: 'VRena Hà Đô Centrosa' },
@@ -25,7 +24,27 @@ export default function App() {
   const [language, setLanguage] = useState<LanguageCode>(initialLanguage)
   const [venue, setVenue] = useState<VenueId>('ha-do-centrosa')
   const [error, setError] = useState('')
+  const [legalDocument, setLegalDocument] = useState<LegalDocument | null>(null)
   const text = copy[language]
+  const legal = legalCopy[language]
+  const activeLegal = legalDocument === 'privacy'
+    ? { title: legal.privacyTitle, sections: legal.privacySections }
+    : { title: legal.termsTitle, sections: legal.termsSections }
+
+  useEffect(() => {
+    if (!legalDocument) return
+    const previousOverflow = document.body.style.overflow
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLegalDocument(null)
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [legalDocument])
+
   function changeLanguage(next: LanguageCode) {
     window.localStorage.setItem('vrena-booking-language', next)
     setLanguage(next)
@@ -107,10 +126,36 @@ export default function App() {
       </section>
 
       <footer>
-        <button type="button" onClick={() => void openInsideZalo(PRIVACY_URL)}>{text.privacy}</button>
+        <button type="button" onClick={() => setLegalDocument('privacy')}>{text.privacy}</button>
         <span aria-hidden="true">·</span>
-        <button type="button" onClick={() => void openInsideZalo(TERMS_URL)}>{text.terms}</button>
+        <button type="button" onClick={() => setLegalDocument('terms')}>{text.terms}</button>
       </footer>
+
+      {legalDocument && (
+        <div className="legal-overlay" role="presentation" onClick={() => setLegalDocument(null)}>
+          <section
+            className="legal-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="legal-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="legal-header">
+              <h2 id="legal-title">{activeLegal.title}</h2>
+              <button type="button" aria-label={legal.close} onClick={() => setLegalDocument(null)}>×</button>
+            </header>
+            <div className="legal-content">
+              {activeLegal.sections.map((section) => (
+                <section key={section.title}>
+                  <h3>{section.title}</h3>
+                  <p>{section.body}</p>
+                </section>
+              ))}
+            </div>
+            <button className="legal-close" type="button" onClick={() => setLegalDocument(null)}>{legal.close}</button>
+          </section>
+        </div>
+      )}
     </main>
   )
 }
