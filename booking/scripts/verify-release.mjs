@@ -14,16 +14,18 @@ for (const language of languages) {
 }
 
 for (const required of [
-  'https://booking.vre-vietnam.com/tickets',
-  'openWebview',
+  'https://booking.vre-vietnam.com/api/zalo/tickets',
+  "type Step = 'venue' | 'booking' | 'confirmed'",
+  "birthdayPackages",
+  "action: 'availability'",
+  "action: 'book'",
   'ha-do-centrosa',
   'cafe-des-stagiaires',
-  'utm_source',
 ]) {
   if (!files.app.includes(required) && !files.built.includes(required)) throw new Error(`Missing required release marker: ${required}`)
 }
 
-for (const forbidden of ['getPhoneNumber', 'getAccessToken', 'getUserID', 'player-auth', 'vre-vietnam.com/privacy-policy', 'vre-vietnam.com/terms-and-conditions']) {
+for (const forbidden of ['getPhoneNumber', 'getAccessToken', 'getUserID', 'player-auth', 'openWebview', 'https://booking.vre-vietnam.com/tickets', 'vre-vietnam.com/privacy-policy', 'vre-vietnam.com/terms-and-conditions', '<a ']) {
   if (files.app.includes(forbidden) || files.built.includes(forbidden)) throw new Error(`Forbidden Booking release dependency: ${forbidden}`)
 }
 
@@ -32,4 +34,4 @@ for (const required of ['privacyTitle', 'privacySections', 'termsTitle', 'termsS
 }
 
 if (!files.config.includes('VRena Booking')) throw new Error('App config title is incorrect')
-console.log('VRena Booking release verification passed for all eight languages.')
+console.log('VRena Booking release verification passed: all eight languages and no external navigation.')
