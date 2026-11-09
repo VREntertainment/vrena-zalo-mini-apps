@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=League+Spartan:wght@600;700;800&display=swap');
-
 :root {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #020e0e;
@@ -48,12 +46,12 @@ button { -webkit-tap-highlight-color: transparent; }
 .hero { position: relative; padding: 32px 24px 30px; overflow: hidden; border-radius: 28px; background: #fff; border: 1px solid var(--border); box-shadow: 0 20px 52px rgba(2, 14, 14, 0.07); }
 .hero::after { content: ""; position: absolute; right: -66px; bottom: -96px; width: 220px; height: 220px; border: 1px solid rgba(82, 91, 253, 0.18); border-radius: 50%; box-shadow: 0 0 0 36px rgba(0, 233, 237, 0.06); }
 .eyebrow { display: block; margin-bottom: 14px; color: var(--purple-dark); font-size: 0.74rem; line-height: 1.2; font-weight: 800; letter-spacing: 0.18em; }
-.hero h1 { position: relative; z-index: 1; max-width: 390px; margin: 0; font-family: "League Spartan", Inter, sans-serif; font-size: clamp(2.55rem, 11vw, 4rem); line-height: 0.94; letter-spacing: -0.035em; }
+.hero h1 { position: relative; z-index: 1; max-width: 390px; margin: 0; font-family: Inter, system-ui, sans-serif; font-size: clamp(2.55rem, 11vw, 4rem); font-weight: 800; line-height: 0.94; letter-spacing: -0.035em; }
 .hero p { position: relative; z-index: 1; max-width: 370px; margin: 14px 0 0; color: var(--muted); font-size: 0.92rem; line-height: 1.48; }
 
 .booking-card { margin-top: 18px; padding: 22px; border-radius: 24px; border: 1px solid var(--border); background: #fff; box-shadow: 0 14px 36px rgba(2, 14, 14, 0.055); }
 .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.section-heading h2 { margin: 0; font-family: "League Spartan", Inter, sans-serif; font-size: 1.65rem; line-height: 1; }
+.section-heading h1, .section-heading h2 { margin: 0; font-family: Inter, system-ui, sans-serif; font-size: 1.65rem; font-weight: 800; line-height: 1; }
 .step-badge { flex: 0 0 auto; padding: 7px 10px; border-radius: 999px; background: #edf2ff; color: var(--purple-dark); font-size: 0.75rem; font-weight: 800; }
 .venue-list { display: grid; gap: 10px; margin-top: 18px; }
 .venue-card { position: relative; width: 100%; min-height: 126px; display: flex; gap: 13px; align-items: flex-start; padding: 16px; text-align: left; color: var(--ink); border: 1px solid var(--border); border-radius: 17px; background: #fafbfb; cursor: pointer; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
@@ -63,21 +61,62 @@ button { -webkit-tap-highlight-color: transparent; }
 .venue-card.is-selected .venue-radio { border-color: var(--purple); }
 .venue-card.is-selected .venue-radio span { width: 12px; height: 12px; border-radius: 50%; background: var(--purple); }
 .venue-copy { min-width: 0; display: grid; gap: 5px; padding-right: 64px; }
-.venue-copy strong { font-family: "League Spartan", Inter, sans-serif; font-size: 1.07rem; line-height: 1.1; }
+.venue-copy strong { font-family: Inter, system-ui, sans-serif; font-size: 1.07rem; font-weight: 800; line-height: 1.1; }
 .venue-copy small { color: #0a6972; font-size: 0.78rem; font-weight: 700; }
 .venue-copy > span { color: var(--muted); font-size: 0.82rem; line-height: 1.4; }
 .selected-label { position: absolute; top: 14px; right: 14px; color: var(--purple-dark); font-size: 0.69rem; font-weight: 800; text-transform: uppercase; }
-.primary-button { width: 100%; min-height: 58px; margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; border: 0; border-radius: 15px; background: var(--purple); color: #fff; font-family: "League Spartan", Inter, sans-serif; font-size: 1.15rem; font-weight: 800; box-shadow: 0 14px 26px rgba(82, 91, 253, 0.24); cursor: pointer; }
+.primary-button { width: 100%; min-height: 58px; margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; border: 0; border-radius: 15px; background: var(--purple); color: #fff; font-family: Inter, system-ui, sans-serif; font-size: 1.15rem; font-weight: 800; box-shadow: 0 14px 26px rgba(82, 91, 253, 0.24); cursor: pointer; }
 .primary-button:active { background: var(--purple-dark); transform: translateY(1px); }
-.primary-button:focus-visible, .venue-card:focus-visible, footer button:focus-visible, .legal-panel button:focus-visible, select:focus-visible { outline: 3px solid #00abb7; outline-offset: 3px; }
+.primary-button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.primary-button:focus-visible, .venue-card:focus-visible, footer button:focus-visible, .legal-panel button:focus-visible, .back-button:focus-visible, .choice-group button:focus-visible, .consent-row button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #00abb7; outline-offset: 3px; }
 .error-message { margin: 14px 0 0; padding: 12px 14px; color: #8a2518; border: 1px solid #f6b5a8; border-radius: 12px; background: #fff4f1; font-size: 0.86rem; line-height: 1.45; }
+
+.form-card { margin-top: 0; }
+.back-button { min-height: 40px; margin: -6px 0 12px; padding: 0; border: 0; background: transparent; color: var(--purple-dark); font-size: 0.86rem; font-weight: 700; cursor: pointer; }
+.venue-summary { margin: 9px 0 22px; color: #0a6972; font-size: 0.88rem; font-weight: 700; }
+.choice-group { min-width: 0; margin: 0 0 18px; padding: 0; border: 0; }
+.choice-group legend, .field-grid label > span, .field-block > span { display: block; margin-bottom: 8px; color: var(--ink); font-size: 0.8rem; font-weight: 800; }
+.segmented-control { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 5px; border: 1px solid var(--border); border-radius: 14px; background: #f5f7f7; }
+.segmented-control button { min-width: 0; min-height: 44px; padding: 7px 6px; overflow-wrap: anywhere; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+.segmented-control button.is-active { background: var(--purple); color: #fff; box-shadow: 0 7px 18px rgba(82, 91, 253, 0.2); }
+.package-list { display: grid; gap: 8px; }
+.package-list legend { margin-bottom: 2px; }
+.package-list button { width: 100%; min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; text-align: left; border: 1px solid var(--border); border-radius: 14px; background: #fafbfb; color: var(--ink); cursor: pointer; }
+.package-list button.is-active { border-color: rgba(82, 91, 253, 0.62); background: #edf2ff; }
+.package-list button > span { display: grid; gap: 3px; }
+.package-list button small { color: var(--muted); font-size: 0.73rem; font-weight: 600; }
+.package-list button > strong { flex: 0 0 auto; color: var(--purple-dark); font-size: 0.78rem; }
+.field-grid { display: grid; gap: 12px; margin-bottom: 16px; }
+.field-grid.two-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field-grid label, .field-block { min-width: 0; }
+.field-grid input, .field-grid select, .field-block select { width: 100%; min-height: 48px; padding: 0 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--ink); font-size: 0.88rem; }
+.field-grid input::placeholder { color: #8a9696; }
+.field-block { display: block; margin-bottom: 16px; }
+.price-summary { display: grid; grid-template-columns: 1fr auto; gap: 5px 14px; margin: 2px 0 18px; padding: 14px; border: 1px solid rgba(82, 91, 253, 0.24); border-radius: 14px; background: #edf2ff; }
+.price-summary > span { color: var(--muted); font-size: 0.79rem; font-weight: 700; }
+.price-summary > strong { color: var(--purple-dark); font-size: 0.96rem; text-align: right; }
+.price-summary > small { grid-column: 1 / -1; color: var(--muted); font-size: 0.72rem; line-height: 1.4; }
+.consent-row { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); font-size: 0.76rem; line-height: 1.5; }
+.consent-row > input { flex: 0 0 auto; width: 22px; height: 22px; margin: 0; accent-color: var(--purple); }
+.consent-row button { padding: 0; border: 0; background: transparent; color: var(--purple-dark); font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; }
+.inside-note { margin: 12px 0 0; color: #0a6972; font-size: 0.74rem; line-height: 1.4; text-align: center; }
+.confirmation-card { margin-top: 0; text-align: center; }
+.confirmation-icon { width: 64px; height: 64px; display: grid; place-items: center; margin: 4px auto 18px; border-radius: 50%; background: #d7ffff; color: #006f78; font-size: 2rem; font-weight: 900; }
+.confirmation-card .eyebrow { margin-bottom: 10px; }
+.confirmation-card h1 { margin: 0; font-size: 2rem; line-height: 1.05; }
+.confirmation-card > p { margin: 12px auto 20px; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+.confirmation-card dl { display: grid; gap: 0; margin: 0; text-align: left; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.confirmation-card dl > div { display: grid; grid-template-columns: 42% 1fr; gap: 14px; padding: 13px 14px; border-bottom: 1px solid var(--border); }
+.confirmation-card dl > div:last-child { border-bottom: 0; }
+.confirmation-card dt { color: var(--muted); font-size: 0.76rem; }
+.confirmation-card dd { margin: 0; color: var(--ink); font-size: 0.78rem; font-weight: 800; overflow-wrap: anywhere; }
 footer { min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 14px; color: #879595; }
 footer button { min-height: 44px; padding: 0 3px; border: 0; background: transparent; color: var(--purple-dark); font-size: 0.78rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 .legal-overlay { position: fixed; inset: 0; z-index: 20; display: grid; align-items: end; padding-top: max(24px, env(safe-area-inset-top)); background: rgba(2, 14, 14, 0.58); }
 .legal-panel { width: min(100%, 520px); max-height: calc(100dvh - max(24px, env(safe-area-inset-top))); margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -18px 56px rgba(2, 14, 14, 0.24); }
 .legal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
-.legal-header h2 { margin: 0; font-family: "League Spartan", Inter, sans-serif; font-size: 1.65rem; line-height: 1; }
+.legal-header h2 { margin: 0; font-family: Inter, system-ui, sans-serif; font-size: 1.65rem; font-weight: 800; line-height: 1; }
 .legal-header button { flex: 0 0 auto; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; background: #fafbfb; color: var(--ink); font-size: 1.8rem; line-height: 1; cursor: pointer; }
 .legal-content { overflow-y: auto; overscroll-behavior: contain; padding: 8px 20px 16px; }
 .legal-content section { padding: 14px 0; border-bottom: 1px solid var(--border); }
@@ -94,6 +133,8 @@ footer button { min-height: 44px; padding: 0 3px; border: 0; background: transpa
   .booking-card { padding: 18px; }
   .venue-copy { padding-right: 0; }
   .selected-label { position: static; align-self: flex-start; margin-left: auto; }
+  .field-grid.two-columns { grid-template-columns: 1fr; }
+  .segmented-control { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
