@@ -18,15 +18,23 @@ for (const required of [
   "type Step = 'venue' | 'booking' | 'confirmed'",
   "birthdayPackages",
   "action: 'availability'",
-  "action: 'book'",
+  "action: 'quote'",
+  "action: 'prepare'",
+  "action: 'register'",
+  'Payment.createOrder',
+  'Zalo Checkout',
   'ha-do-centrosa',
   'cafe-des-stagiaires',
 ]) {
   if (!files.app.includes(required) && !files.built.includes(required)) throw new Error(`Missing required release marker: ${required}`)
 }
 
-for (const forbidden of ['getPhoneNumber', 'getAccessToken', 'getUserID', 'player-auth', 'openWebview', 'https://booking.vre-vietnam.com/tickets', 'vre-vietnam.com/privacy-policy', 'vre-vietnam.com/terms-and-conditions', '<a ']) {
-  if (files.app.includes(forbidden) || files.built.includes(forbidden)) throw new Error(`Forbidden Booking release dependency: ${forbidden}`)
+for (const forbidden of ['getPhoneNumber', 'getAccessToken', 'getUserID', 'player-auth', 'openWebview', "action: 'book'", 'corporate']) {
+  if (files.app.includes(forbidden)) throw new Error(`Forbidden Booking source dependency: ${forbidden}`)
+}
+
+for (const forbidden of ['https://booking.vre-vietnam.com/tickets', 'vre-vietnam.com/privacy-policy', 'vre-vietnam.com/terms-and-conditions', '<a ']) {
+  if (files.app.includes(forbidden) || files.built.includes(forbidden)) throw new Error(`Forbidden Booking navigation dependency: ${forbidden}`)
 }
 
 for (const required of ['privacyTitle', 'privacySections', 'termsTitle', 'termsSections']) {

@@ -127,7 +127,6 @@ type BookingCopy = {
   ticketType: string
   individual: string
   birthday: string
-  corporate: string
   birthdayPackage: string
   playersUnit: string
   date: string
@@ -138,14 +137,14 @@ type BookingCopy = {
   players: string
   arenas: string
   price: string
-  staffConfirmation: string
   name: string
   namePlaceholder: string
   phone: string
   phonePlaceholder: string
   consentPrefix: string
   and: string
-  confirmBooking: string
+  checkout: string
+  payAtVenue: string
   booking: string
   bookingError: string
   chooseTimeError: string
@@ -162,71 +161,71 @@ type BookingCopy = {
 
 export const bookingCopy: Record<LanguageCode, BookingCopy> = {
   en: {
-    back: 'Back', formTitle: 'Complete your booking', ticketType: 'Ticket type', individual: 'Individual', birthday: 'Birthday', corporate: 'Corporate',
+    back: 'Back', formTitle: 'Complete your booking', ticketType: 'Ticket type', individual: 'Individual', birthday: 'Birthday',
     birthdayPackage: 'Birthday package', playersUnit: 'players', date: 'Date', time: 'Available time', loadingTimes: 'Checking availability…', noTimes: 'No time available',
-    duration: 'Duration', players: 'Players', arenas: 'Arenas', price: 'Estimated total', staffConfirmation: 'Final details confirmed by the VRena team',
+    duration: 'Duration', players: 'Players', arenas: 'Arenas', price: 'Exact total',
     name: 'Name (optional)', namePlaceholder: 'Booking name', phone: 'Phone number', phonePlaceholder: '070 000 0000',
-    consentPrefix: 'I agree to the', and: 'and', confirmBooking: 'Confirm booking', booking: 'Confirming…', bookingError: 'Booking is temporarily unavailable. Please try again.',
+    consentPrefix: 'I agree to the', and: 'and', checkout: 'Continue with Zalo Checkout', payAtVenue: 'Confirm with Zalo Checkout · Pay at the venue', booking: 'Opening Zalo Checkout…', bookingError: 'Booking is temporarily unavailable. Please try again.',
     chooseTimeError: 'Choose an available time.', phoneError: 'Enter a valid phone number.', consentError: 'Accept the Privacy Policy and Terms before booking.',
-    insideZalo: 'This booking stays inside the Zalo Mini App.', confirmedTitle: 'Booking confirmed', confirmedBody: 'Your time is reserved. Keep this reference for your visit.',
+    insideZalo: 'This booking stays inside the Zalo Mini App.', confirmedTitle: 'Booking confirmed', confirmedBody: 'Your time is reserved. Pay at the venue and keep this reference for your visit.',
     reference: 'Booking reference', venue: 'Venue', dateTime: 'Date and time', newBooking: 'Make another booking',
   },
   vi: {
-    back: 'Quay lại', formTitle: 'Hoàn tất đặt vé', ticketType: 'Loại vé', individual: 'Cá nhân', birthday: 'Sinh nhật', corporate: 'Doanh nghiệp',
+    back: 'Quay lại', formTitle: 'Hoàn tất đặt vé', ticketType: 'Loại vé', individual: 'Cá nhân', birthday: 'Sinh nhật',
     birthdayPackage: 'Gói sinh nhật', playersUnit: 'người', date: 'Ngày', time: 'Giờ còn trống', loadingTimes: 'Đang kiểm tra lịch trống…', noTimes: 'Không còn giờ trống',
-    duration: 'Thời lượng', players: 'Số người', arenas: 'Số sân', price: 'Tổng dự kiến', staffConfirmation: 'Chi tiết cuối cùng được đội ngũ VRena xác nhận',
+    duration: 'Thời lượng', players: 'Số người', arenas: 'Số sân', price: 'Tổng chính xác',
     name: 'Tên (không bắt buộc)', namePlaceholder: 'Tên người đặt vé', phone: 'Số điện thoại', phonePlaceholder: '070 000 0000',
-    consentPrefix: 'Tôi đồng ý với', and: 'và', confirmBooking: 'Xác nhận đặt vé', booking: 'Đang xác nhận…', bookingError: 'Tạm thời chưa thể đặt vé. Vui lòng thử lại.',
+    consentPrefix: 'Tôi đồng ý với', and: 'và', checkout: 'Tiếp tục với Zalo Checkout', payAtVenue: 'Xác nhận qua Zalo Checkout · Thanh toán tại địa điểm', booking: 'Đang mở Zalo Checkout…', bookingError: 'Tạm thời chưa thể đặt vé. Vui lòng thử lại.',
     chooseTimeError: 'Vui lòng chọn giờ còn trống.', phoneError: 'Vui lòng nhập số điện thoại hợp lệ.', consentError: 'Vui lòng đồng ý với Chính sách bảo mật và Điều khoản.',
-    insideZalo: 'Toàn bộ quy trình đặt vé diễn ra trong Zalo Mini App.', confirmedTitle: 'Đặt vé thành công', confirmedBody: 'Khung giờ của bạn đã được giữ. Vui lòng lưu mã đặt vé này.',
+    insideZalo: 'Toàn bộ quy trình đặt vé diễn ra trong Zalo Mini App.', confirmedTitle: 'Đặt vé thành công', confirmedBody: 'Khung giờ của bạn đã được giữ. Thanh toán tại địa điểm và vui lòng lưu mã đặt vé này.',
     reference: 'Mã đặt vé', venue: 'Địa điểm', dateTime: 'Ngày và giờ', newBooking: 'Đặt vé khác',
   },
   ko: {
-    back: '뒤로', formTitle: '예약 완료', ticketType: '티켓 종류', individual: '개인', birthday: '생일', corporate: '기업', birthdayPackage: '생일 패키지', playersUnit: '명',
-    date: '날짜', time: '예약 가능 시간', loadingTimes: '예약 가능 시간 확인 중…', noTimes: '예약 가능한 시간이 없습니다', duration: '이용 시간', players: '인원', arenas: '아레나', price: '예상 합계',
-    staffConfirmation: '최종 세부 사항은 VRena 팀이 확인합니다', name: '이름(선택)', namePlaceholder: '예약자 이름', phone: '전화번호', phonePlaceholder: '070 000 0000',
-    consentPrefix: '다음에 동의합니다:', and: '및', confirmBooking: '예약 확인', booking: '확인 중…', bookingError: '현재 예약할 수 없습니다. 다시 시도하세요.', chooseTimeError: '예약 가능한 시간을 선택하세요.',
+    back: '뒤로', formTitle: '예약 완료', ticketType: '티켓 종류', individual: '개인', birthday: '생일', birthdayPackage: '생일 패키지', playersUnit: '명',
+    date: '날짜', time: '예약 가능 시간', loadingTimes: '예약 가능 시간 확인 중…', noTimes: '예약 가능한 시간이 없습니다', duration: '이용 시간', players: '인원', arenas: '아레나', price: '총액',
+    name: '이름(선택)', namePlaceholder: '예약자 이름', phone: '전화번호', phonePlaceholder: '070 000 0000',
+    consentPrefix: '다음에 동의합니다:', and: '및', checkout: 'Zalo Checkout으로 계속', payAtVenue: 'Zalo Checkout으로 확인 · 현장 결제', booking: 'Zalo Checkout 여는 중…', bookingError: '현재 예약할 수 없습니다. 다시 시도하세요.', chooseTimeError: '예약 가능한 시간을 선택하세요.',
     phoneError: '유효한 전화번호를 입력하세요.', consentError: '예약 전 개인정보 처리방침과 이용약관에 동의하세요.', insideZalo: '예약은 Zalo Mini App 안에서 완료됩니다.',
-    confirmedTitle: '예약 확정', confirmedBody: '시간이 예약되었습니다. 방문 시 예약 번호를 보관하세요.', reference: '예약 번호', venue: '지점', dateTime: '날짜 및 시간', newBooking: '다른 예약 만들기',
+    confirmedTitle: '예약 확정', confirmedBody: '시간이 예약되었습니다. 현장에서 결제하고 예약 번호를 보관하세요.', reference: '예약 번호', venue: '지점', dateTime: '날짜 및 시간', newBooking: '다른 예약 만들기',
   },
   ja: {
-    back: '戻る', formTitle: '予約を完了', ticketType: 'チケット種類', individual: '個人', birthday: '誕生日', corporate: '法人', birthdayPackage: '誕生日パッケージ', playersUnit: '名',
-    date: '日付', time: '空き時間', loadingTimes: '空き状況を確認中…', noTimes: '空き時間がありません', duration: '時間', players: '人数', arenas: 'アリーナ', price: '予定合計',
-    staffConfirmation: '最終内容はVRenaチームが確認します', name: '名前（任意）', namePlaceholder: '予約者名', phone: '電話番号', phonePlaceholder: '070 000 0000',
-    consentPrefix: '以下に同意します：', and: 'および', confirmBooking: '予約を確定', booking: '確認中…', bookingError: '現在予約できません。もう一度お試しください。', chooseTimeError: '空き時間を選択してください。',
+    back: '戻る', formTitle: '予約を完了', ticketType: 'チケット種類', individual: '個人', birthday: '誕生日', birthdayPackage: '誕生日パッケージ', playersUnit: '名',
+    date: '日付', time: '空き時間', loadingTimes: '空き状況を確認中…', noTimes: '空き時間がありません', duration: '時間', players: '人数', arenas: 'アリーナ', price: '合計',
+    name: '名前（任意）', namePlaceholder: '予約者名', phone: '電話番号', phonePlaceholder: '070 000 0000',
+    consentPrefix: '以下に同意します：', and: 'および', checkout: 'Zalo Checkoutへ進む', payAtVenue: 'Zalo Checkoutで確認・店舗で支払い', booking: 'Zalo Checkoutを開いています…', bookingError: '現在予約できません。もう一度お試しください。', chooseTimeError: '空き時間を選択してください。',
     phoneError: '有効な電話番号を入力してください。', consentError: '予約前にプライバシーポリシーと利用規約に同意してください。', insideZalo: '予約はZalo Mini App内で完了します。',
-    confirmedTitle: '予約確定', confirmedBody: '時間を確保しました。来店時まで予約番号を保管してください。', reference: '予約番号', venue: '店舗', dateTime: '日時', newBooking: '別の予約をする',
+    confirmedTitle: '予約確定', confirmedBody: '時間を確保しました。店舗で支払い、予約番号を保管してください。', reference: '予約番号', venue: '店舗', dateTime: '日時', newBooking: '別の予約をする',
   },
   fr: {
-    back: 'Retour', formTitle: 'Finaliser la réservation', ticketType: 'Type de billet', individual: 'Individuel', birthday: 'Anniversaire', corporate: 'Entreprise', birthdayPackage: 'Forfait anniversaire', playersUnit: 'joueurs',
-    date: 'Date', time: 'Horaire disponible', loadingTimes: 'Vérification des disponibilités…', noTimes: 'Aucun horaire disponible', duration: 'Durée', players: 'Joueurs', arenas: 'Arènes', price: 'Total estimé',
-    staffConfirmation: 'Détails finaux confirmés par l’équipe VRena', name: 'Nom (facultatif)', namePlaceholder: 'Nom de réservation', phone: 'Téléphone', phonePlaceholder: '070 000 0000',
-    consentPrefix: 'J’accepte la', and: 'et les', confirmBooking: 'Confirmer', booking: 'Confirmation…', bookingError: 'Réservation temporairement indisponible. Réessayez.', chooseTimeError: 'Choisissez un horaire disponible.',
+    back: 'Retour', formTitle: 'Finaliser la réservation', ticketType: 'Type de billet', individual: 'Individuel', birthday: 'Anniversaire', birthdayPackage: 'Forfait anniversaire', playersUnit: 'joueurs',
+    date: 'Date', time: 'Horaire disponible', loadingTimes: 'Vérification des disponibilités…', noTimes: 'Aucun horaire disponible', duration: 'Durée', players: 'Joueurs', arenas: 'Arènes', price: 'Total',
+    name: 'Nom (facultatif)', namePlaceholder: 'Nom de réservation', phone: 'Téléphone', phonePlaceholder: '070 000 0000',
+    consentPrefix: 'J’accepte la', and: 'et les', checkout: 'Continuer avec Zalo Checkout', payAtVenue: 'Confirmer via Zalo Checkout · Payer sur place', booking: 'Ouverture de Zalo Checkout…', bookingError: 'Réservation temporairement indisponible. Réessayez.', chooseTimeError: 'Choisissez un horaire disponible.',
     phoneError: 'Saisissez un numéro valide.', consentError: 'Acceptez la politique de confidentialité et les conditions.', insideZalo: 'La réservation reste dans la Mini App Zalo.',
-    confirmedTitle: 'Réservation confirmée', confirmedBody: 'Votre horaire est réservé. Conservez cette référence.', reference: 'Référence', venue: 'Site', dateTime: 'Date et heure', newBooking: 'Nouvelle réservation',
+    confirmedTitle: 'Réservation confirmée', confirmedBody: 'Votre horaire est réservé. Payez sur place et conservez cette référence.', reference: 'Référence', venue: 'Site', dateTime: 'Date et heure', newBooking: 'Nouvelle réservation',
   },
   de: {
-    back: 'Zurück', formTitle: 'Buchung abschließen', ticketType: 'Ticketart', individual: 'Einzeln', birthday: 'Geburtstag', corporate: 'Firma', birthdayPackage: 'Geburtstagspaket', playersUnit: 'Personen',
-    date: 'Datum', time: 'Verfügbare Zeit', loadingTimes: 'Verfügbarkeit wird geprüft…', noTimes: 'Keine Zeit verfügbar', duration: 'Dauer', players: 'Personen', arenas: 'Arenen', price: 'Voraussichtlicher Gesamtpreis',
-    staffConfirmation: 'Endgültige Details bestätigt das VRena-Team', name: 'Name (optional)', namePlaceholder: 'Buchungsname', phone: 'Telefonnummer', phonePlaceholder: '070 000 0000',
-    consentPrefix: 'Ich akzeptiere die', and: 'und die', confirmBooking: 'Buchung bestätigen', booking: 'Wird bestätigt…', bookingError: 'Buchung vorübergehend nicht verfügbar. Bitte erneut versuchen.', chooseTimeError: 'Wähle eine verfügbare Zeit.',
+    back: 'Zurück', formTitle: 'Buchung abschließen', ticketType: 'Ticketart', individual: 'Einzeln', birthday: 'Geburtstag', birthdayPackage: 'Geburtstagspaket', playersUnit: 'Personen',
+    date: 'Datum', time: 'Verfügbare Zeit', loadingTimes: 'Verfügbarkeit wird geprüft…', noTimes: 'Keine Zeit verfügbar', duration: 'Dauer', players: 'Personen', arenas: 'Arenen', price: 'Gesamtpreis',
+    name: 'Name (optional)', namePlaceholder: 'Buchungsname', phone: 'Telefonnummer', phonePlaceholder: '070 000 0000',
+    consentPrefix: 'Ich akzeptiere die', and: 'und die', checkout: 'Weiter mit Zalo Checkout', payAtVenue: 'Mit Zalo Checkout bestätigen · Vor Ort bezahlen', booking: 'Zalo Checkout wird geöffnet…', bookingError: 'Buchung vorübergehend nicht verfügbar. Bitte erneut versuchen.', chooseTimeError: 'Wähle eine verfügbare Zeit.',
     phoneError: 'Gib eine gültige Telefonnummer ein.', consentError: 'Akzeptiere Datenschutz und Bedingungen.', insideZalo: 'Die Buchung bleibt in der Zalo Mini App.',
-    confirmedTitle: 'Buchung bestätigt', confirmedBody: 'Deine Zeit ist reserviert. Bewahre diese Referenz auf.', reference: 'Buchungsnummer', venue: 'Standort', dateTime: 'Datum und Zeit', newBooking: 'Weitere Buchung',
+    confirmedTitle: 'Buchung bestätigt', confirmedBody: 'Deine Zeit ist reserviert. Bezahle vor Ort und bewahre diese Referenz auf.', reference: 'Buchungsnummer', venue: 'Standort', dateTime: 'Datum und Zeit', newBooking: 'Weitere Buchung',
   },
   it: {
-    back: 'Indietro', formTitle: 'Completa la prenotazione', ticketType: 'Tipo di biglietto', individual: 'Individuale', birthday: 'Compleanno', corporate: 'Aziendale', birthdayPackage: 'Pacchetto compleanno', playersUnit: 'giocatori',
-    date: 'Data', time: 'Orario disponibile', loadingTimes: 'Verifica disponibilità…', noTimes: 'Nessun orario disponibile', duration: 'Durata', players: 'Giocatori', arenas: 'Arene', price: 'Totale stimato',
-    staffConfirmation: 'Dettagli finali confermati dal team VRena', name: 'Nome (facoltativo)', namePlaceholder: 'Nome prenotazione', phone: 'Telefono', phonePlaceholder: '070 000 0000',
-    consentPrefix: 'Accetto la', and: 'e i', confirmBooking: 'Conferma prenotazione', booking: 'Conferma…', bookingError: 'Prenotazione temporaneamente non disponibile. Riprova.', chooseTimeError: 'Scegli un orario disponibile.',
+    back: 'Indietro', formTitle: 'Completa la prenotazione', ticketType: 'Tipo di biglietto', individual: 'Individuale', birthday: 'Compleanno', birthdayPackage: 'Pacchetto compleanno', playersUnit: 'giocatori',
+    date: 'Data', time: 'Orario disponibile', loadingTimes: 'Verifica disponibilità…', noTimes: 'Nessun orario disponibile', duration: 'Durata', players: 'Giocatori', arenas: 'Arene', price: 'Totale',
+    name: 'Nome (facoltativo)', namePlaceholder: 'Nome prenotazione', phone: 'Telefono', phonePlaceholder: '070 000 0000',
+    consentPrefix: 'Accetto la', and: 'e i', checkout: 'Continua con Zalo Checkout', payAtVenue: 'Conferma con Zalo Checkout · Paga in sede', booking: 'Apertura di Zalo Checkout…', bookingError: 'Prenotazione temporaneamente non disponibile. Riprova.', chooseTimeError: 'Scegli un orario disponibile.',
     phoneError: 'Inserisci un numero valido.', consentError: 'Accetta informativa privacy e condizioni.', insideZalo: 'La prenotazione resta nella Mini App Zalo.',
-    confirmedTitle: 'Prenotazione confermata', confirmedBody: 'Il tuo orario è riservato. Conserva questo riferimento.', reference: 'Riferimento', venue: 'Sede', dateTime: 'Data e ora', newBooking: 'Nuova prenotazione',
+    confirmedTitle: 'Prenotazione confermata', confirmedBody: 'Il tuo orario è riservato. Paga in sede e conserva questo riferimento.', reference: 'Riferimento', venue: 'Sede', dateTime: 'Data e ora', newBooking: 'Nuova prenotazione',
   },
   zh: {
-    back: '返回', formTitle: '完成预订', ticketType: '门票类型', individual: '个人', birthday: '生日', corporate: '企业', birthdayPackage: '生日套餐', playersUnit: '人',
-    date: '日期', time: '可预约时间', loadingTimes: '正在查询空余时间…', noTimes: '暂无可预约时间', duration: '时长', players: '人数', arenas: '场地数', price: '预计总价',
-    staffConfirmation: '最终细节由VRena团队确认', name: '姓名（可选）', namePlaceholder: '预订姓名', phone: '电话号码', phonePlaceholder: '070 000 0000',
-    consentPrefix: '我同意', and: '及', confirmBooking: '确认预订', booking: '确认中…', bookingError: '暂时无法预订，请重试。', chooseTimeError: '请选择可预约时间。',
+    back: '返回', formTitle: '完成预订', ticketType: '门票类型', individual: '个人', birthday: '生日', birthdayPackage: '生日套餐', playersUnit: '人',
+    date: '日期', time: '可预约时间', loadingTimes: '正在查询空余时间…', noTimes: '暂无可预约时间', duration: '时长', players: '人数', arenas: '场地数', price: '总价',
+    name: '姓名（可选）', namePlaceholder: '预订姓名', phone: '电话号码', phonePlaceholder: '070 000 0000',
+    consentPrefix: '我同意', and: '及', checkout: '继续使用 Zalo Checkout', payAtVenue: '通过 Zalo Checkout 确认 · 到店付款', booking: '正在打开 Zalo Checkout…', bookingError: '暂时无法预订，请重试。', chooseTimeError: '请选择可预约时间。',
     phoneError: '请输入有效电话号码。', consentError: '预订前请同意隐私政策和条款。', insideZalo: '整个预订流程均在Zalo Mini App内完成。',
-    confirmedTitle: '预订已确认', confirmedBody: '您的时间已保留，请保存预订编号。', reference: '预订编号', venue: '门店', dateTime: '日期和时间', newBooking: '再次预订',
+    confirmedTitle: '预订已确认', confirmedBody: '您的时间已保留。请到店付款并保存预订编号。', reference: '预订编号', venue: '门店', dateTime: '日期和时间', newBooking: '再次预订',
   },
 }

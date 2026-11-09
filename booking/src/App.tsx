@@ -1,15 +1,55 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { EventName, Payment, events } from 'zmp-sdk/apis'
 import { bookingCopy, copy, initialLanguage, languageCodes, type LanguageCode } from './i18n'
 import { legalCopy, type LegalDocument } from './legal'
 
 type VenueId = 'ha-do-centrosa' | 'cafe-des-stagiaires'
-type TicketType = 'individual' | 'birthday' | 'corporate'
+type TicketType = 'individual' | 'birthday'
 type Step = 'venue' | 'booking' | 'confirmed'
 
 type AvailabilityTime = { value: string; label: string; remaining: number }
-type Confirmation = { reference: string; sessionId: string; totalPrice: number; displayTotal: number; requiresStaffConfirmation: boolean }
+type Confirmation = {
+  reference: string
+  sessionId: string
+  totalPrice: number
+  displayTotal: number
+  requiresStaffConfirmation: boolean
+  venue: VenueId
+  date: string
+  time: string
+}
+
+type PreparedCheckout = {
+  checkoutToken: string
+  order: {
+    amount: number
+    desc: string
+    item: Array<Record<string, string | number>>
+    extradata: string
+    method: string
+    mac: string
+  }
+}
+
+type PendingCheckout = { checkoutToken: string; orderId?: string }
 
 const BOOKING_API_URL = import.meta.env.VITE_BOOKING_API_URL || 'https://booking.vre-vietnam.com/api/zalo/tickets'
+const PENDING_CHECKOUT_KEY = 'vrena-booking-pending-checkout'
+
+function readPendingCheckout(): PendingCheckout | null {
+  const saved = window.sessionStorage.getItem(PENDING_CHECKOUT_KEY)
+  if (!saved) return null
+  try {
+    const parsed = JSON.parse(saved) as PendingCheckout
+    return parsed?.checkoutToken ? parsed : null
+  } catch {
+    return { checkoutToken: saved }
+  }
+}
+
+function savePendingCheckout(value: PendingCheckout) {
+  window.sessionStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify(value))
+}
 
 const venues: Array<{ id: VenueId; name: string }> = [
   { id: 'ha-do-centrosa', name: 'VRena Hà Đô Centrosa' },
@@ -38,6 +78,7 @@ function unitPrice(date: string, time: string, venue: VenueId) {
   const day = new Date(`${date}T12:00:00+07:00`).getDay()
   const minutes = Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5))
   if (venue === 'cafe-des-stagiaires') {
+    if (day === 0 || day === 6) return minutes >= 20 * 60 ? 290_000 : 240_000
     if (minutes >= 20 * 60) return 290_000
     if (minutes >= 16 * 60) return 240_000
     return 190_000
@@ -81,6 +122,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [legalDocument, setLegalDocument] = useState<LegalDocument | null>(null)
+  const [quotedPrice, setQuotedPrice] = useState<number | null>(null)
   const text = copy[language]
   const formText = bookingCopy[language]
   const legal = legalCopy[language]
@@ -89,11 +131,74 @@ export default function App() {
     : { title: legal.termsTitle, sections: legal.termsSections }
   const selectedPackage = birthdayPackages.find((item) => item.id === birthdayPackageId) || birthdayPackages[0]
 
-  const price = useMemo(() => {
+  const localPrice = useMemo(() => {
     if (ticketType === 'birthday') return selectedPackage.price
-    if (ticketType === 'corporate') return null
     return individualPrice(date, time, players, duration, arenaCount, venue)
   }, [arenaCount, date, duration, players, selectedPackage.price, ticketType, time, venue])
+  const price = quotedPrice ?? localPrice
+
+  const checkCheckoutToken = useCallback(async (checkoutToken: string, attempts = 1) => {
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      try {
+        const response = await fetch(BOOKING_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'status', checkoutToken }),
+        })
+        const payload = await response.json()
+        if (payload.data?.status === 'confirmed' && payload.data.confirmation) {
+          const next = payload.data.confirmation as Confirmation
+          window.sessionStorage.removeItem(PENDING_CHECKOUT_KEY)
+          setConfirmation(next)
+          setVenue(next.venue)
+          setDate(next.date)
+          setTime(next.time)
+          setStep('confirmed')
+          setError('')
+          setIsBooking(false)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          return true
+        }
+        if (payload.data?.status === 'failed' || (!response.ok && response.status !== 404)) {
+          window.sessionStorage.removeItem(PENDING_CHECKOUT_KEY)
+          setError(payload.error?.message || formText.bookingError)
+          setIsBooking(false)
+          return false
+        }
+      } catch {
+        if (attempt === attempts - 1) setError(formText.bookingError)
+      }
+      if (attempt < attempts - 1) await new Promise((resolve) => window.setTimeout(resolve, 1_200))
+    }
+    setIsBooking(false)
+    return false
+  }, [formText.bookingError])
+
+  const registerCheckoutOrder = useCallback(async (pending: PendingCheckout) => {
+    if (!pending.orderId) return
+    await fetch(BOOKING_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'register', ...pending }),
+    })
+  }, [])
+
+  useEffect(() => {
+    const resumeCheckout = () => {
+      const pending = readPendingCheckout()
+      if (!pending) return
+      void registerCheckoutOrder(pending).finally(() => checkCheckoutToken(pending.checkoutToken, 6))
+    }
+    events.on(EventName.OpenApp, resumeCheckout)
+    events.on(EventName.PaymentClose, resumeCheckout)
+    window.addEventListener('focus', resumeCheckout)
+    resumeCheckout()
+    return () => {
+      events.off(EventName.OpenApp, resumeCheckout)
+      events.off(EventName.PaymentClose, resumeCheckout)
+      window.removeEventListener('focus', resumeCheckout)
+    }
+  }, [checkCheckoutToken, registerCheckoutOrder])
 
   useEffect(() => {
     if (!legalDocument) return
@@ -116,8 +221,7 @@ export default function App() {
       setArenaCount(venue === 'cafe-des-stagiaires' ? 1 : selectedPackage.arenas)
       return
     }
-    const minPlayers = ticketType === 'corporate' ? 6 : 1
-    setPlayers((current) => Math.max(current, minPlayers))
+    setPlayers((current) => Math.max(current, 1))
     setArenaCount((current) => venue === 'cafe-des-stagiaires' ? 1 : current)
   }, [selectedPackage, ticketType, venue])
 
@@ -155,6 +259,29 @@ export default function App() {
     return () => controller.abort()
   }, [arenaCount, date, duration, formText.bookingError, step, venue])
 
+  useEffect(() => {
+    setQuotedPrice(null)
+    if (step !== 'booking' || !time) return
+    const controller = new AbortController()
+    void fetch(BOOKING_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'quote',
+        selection: {
+          venue, ticketType, date, time, durationMinutes: duration, players, arenaCount,
+          birthdayPackageId: ticketType === 'birthday' ? birthdayPackageId : null,
+        },
+      }),
+      signal: controller.signal,
+    }).then(async (response) => {
+      const payload = await response.json()
+      const total = Number(payload.data?.displayTotal)
+      if (response.ok && Number.isInteger(total) && total > 0) setQuotedPrice(total)
+    }).catch(() => undefined)
+    return () => controller.abort()
+  }, [arenaCount, birthdayPackageId, date, duration, players, step, ticketType, time, venue])
+
   function changeLanguage(next: LanguageCode) {
     window.localStorage.setItem('vrena-booking-language', next)
     setLanguage(next)
@@ -166,10 +293,6 @@ export default function App() {
     if (next === 'individual') {
       setPlayers(2)
       setDuration(30)
-      setArenaCount(1)
-    } else if (next === 'corporate') {
-      setPlayers(6)
-      setDuration(60)
       setArenaCount(1)
     }
   }
@@ -195,7 +318,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'book',
+          action: 'prepare',
           selection: {
             venue, ticketType, date, time, durationMinutes: duration, players, arenaCount,
             guestName, guestPhone, birthdayPackageId: ticketType === 'birthday' ? birthdayPackageId : null,
@@ -205,10 +328,16 @@ export default function App() {
       })
       const payload = await response.json()
       if (!response.ok || payload.error) throw new Error(payload.error?.message || formText.bookingError)
-      setConfirmation(payload.data)
-      setStep('confirmed')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      const prepared = payload.data as PreparedCheckout
+      savePendingCheckout({ checkoutToken: prepared.checkoutToken })
+      const { orderId } = await Payment.createOrder(prepared.order)
+      const pending = { checkoutToken: prepared.checkoutToken, orderId }
+      savePendingCheckout(pending)
+      await registerCheckoutOrder(pending)
+      void checkCheckoutToken(prepared.checkoutToken, 10)
     } catch (requestError) {
+      const pending = readPendingCheckout()
+      if (pending && !pending.orderId) window.sessionStorage.removeItem(PENDING_CHECKOUT_KEY)
       setError(requestError instanceof Error ? requestError.message : formText.bookingError)
     } finally {
       setIsBooking(false)
@@ -282,7 +411,7 @@ export default function App() {
           <fieldset className="choice-group">
             <legend>{formText.ticketType}</legend>
             <div className="segmented-control">
-              {(['individual', 'birthday', 'corporate'] as const).map((type) => (
+              {(['individual', 'birthday'] as const).map((type) => (
                 <button key={type} type="button" className={ticketType === type ? 'is-active' : ''} onClick={() => changeTicketType(type)}>{formText[type]}</button>
               ))}
             </div>
@@ -318,7 +447,7 @@ export default function App() {
                   {[30, 60, 90, 120, 150, 180].filter((minutes) => minutes >= minimumDuration(players, arenaCount, venue)).map((minutes) => <option key={minutes} value={minutes}>{minutes} min</option>)}
                 </select>
               </label>
-              <label><span>{formText.players}</span><input type="number" min={ticketType === 'corporate' ? 6 : 1} max={ticketType === 'corporate' ? 32 : 16} value={players} onChange={(event) => setPlayers(Number(event.target.value))} /></label>
+              <label><span>{formText.players}</span><input type="number" min={1} max={16} value={players} onChange={(event) => setPlayers(Number(event.target.value))} /></label>
             </div>
           )}
 
@@ -330,8 +459,8 @@ export default function App() {
 
           <div className="price-summary">
             <span>{formText.price}</span>
-            <strong>{price === null ? formText.staffConfirmation : vnd(price)}</strong>
-            {ticketType === 'birthday' && <small>{formText.staffConfirmation}</small>}
+            <strong>{vnd(price)}</strong>
+            <small>{formText.payAtVenue}</small>
           </div>
 
           <div className="field-grid">
@@ -346,7 +475,7 @@ export default function App() {
 
           {error && <p className="error-message" role="alert">{error}</p>}
           <button className="primary-button" type="button" disabled={isBooking || isLoadingTimes || !time} onClick={() => void book()}>
-            <span>{isBooking ? formText.booking : formText.confirmBooking}</span><span aria-hidden="true">→</span>
+            <span>{isBooking ? formText.booking : formText.checkout}</span><span aria-hidden="true">→</span>
           </button>
           <p className="inside-note">{formText.insideZalo}</p>
         </section>
@@ -360,8 +489,8 @@ export default function App() {
           <p>{formText.confirmedBody}</p>
           <dl>
             <div><dt>{formText.reference}</dt><dd>{confirmation.reference}</dd></div>
-            <div><dt>{formText.venue}</dt><dd>{venues.find((item) => item.id === venue)?.name}</dd></div>
-            <div><dt>{formText.dateTime}</dt><dd>{date} · {time}</dd></div>
+            <div><dt>{formText.venue}</dt><dd>{venues.find((item) => item.id === confirmation.venue)?.name}</dd></div>
+            <div><dt>{formText.dateTime}</dt><dd>{confirmation.date} · {confirmation.time}</dd></div>
           </dl>
           <button className="primary-button" type="button" onClick={startOver}><span>{formText.newBooking}</span><span aria-hidden="true">↻</span></button>
         </section>
