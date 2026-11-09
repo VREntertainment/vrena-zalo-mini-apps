@@ -70,6 +70,19 @@ function vietnamDate(daysAhead = 0) {
   return `${part('year')}-${part('month')}-${part('day')}`
 }
 
+function isFutureVietnamSlot(date: string, time: string, now = new Date()) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return false
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(now)
+  const part = (name: string) => parts.find((item) => item.type === name)?.value || ''
+  const today = `${part('year')}-${part('month')}-${part('day')}`
+  if (date !== today) return date > today
+  const [hours, minutes] = time.split(':').map(Number)
+  return hours * 60 + minutes > Number(part('hour')) * 60 + Number(part('minute'))
+}
+
 function vnd(value: number) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(value)
 }
@@ -123,6 +136,7 @@ export default function App() {
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null)
   const [legalDocument, setLegalDocument] = useState<LegalDocument | null>(null)
   const [quotedPrice, setQuotedPrice] = useState<number | null>(null)
+  const [clockTick, setClockTick] = useState(() => Date.now())
   const text = copy[language]
   const formText = bookingCopy[language]
   const legal = legalCopy[language]
@@ -232,7 +246,22 @@ export default function App() {
   }, [arenaCount, players, ticketType, venue])
 
   useEffect(() => {
+    if (step !== 'booking') return
+    const interval = window.setInterval(() => setClockTick(Date.now()), 60_000)
+    return () => window.clearInterval(interval)
+  }, [step])
+
+  useEffect(() => {
     if (step !== 'booking' || !date) return
+    void clockTick
+    const today = vietnamDate()
+    if (date < today) {
+      setDate(today)
+      setTimes([])
+      setTime('')
+      setError(formText.pastTimeError)
+      return
+    }
     const controller = new AbortController()
     setIsLoadingTimes(true)
     setError('')
@@ -257,7 +286,7 @@ export default function App() {
       })
       .finally(() => setIsLoadingTimes(false))
     return () => controller.abort()
-  }, [arenaCount, date, duration, formText.bookingError, step, venue])
+  }, [arenaCount, clockTick, date, duration, formText.bookingError, formText.pastTimeError, step, venue])
 
   useEffect(() => {
     setQuotedPrice(null)
@@ -300,6 +329,11 @@ export default function App() {
   async function book() {
     if (!time) {
       setError(formText.chooseTimeError)
+      return
+    }
+    if (!isFutureVietnamSlot(date, time)) {
+      setTime('')
+      setError(formText.pastTimeError)
       return
     }
     const phoneDigits = guestPhone.replace(/\D/g, '').length
@@ -430,7 +464,11 @@ export default function App() {
           )}
 
           <div className="field-grid two-columns">
-            <label><span>{formText.date}</span><input type="date" min={vietnamDate()} value={date} onChange={(event) => setDate(event.target.value)} /></label>
+            <label><span>{formText.date}</span><input type="date" min={vietnamDate()} value={date} onChange={(event) => {
+              const today = vietnamDate()
+              setDate(event.target.value && event.target.value < today ? today : event.target.value)
+              setTime('')
+            }} /></label>
             <label><span>{formText.time}</span>
               <select value={time} onChange={(event) => setTime(event.target.value)} disabled={isLoadingTimes || times.length === 0}>
                 {isLoadingTimes && <option value="">{formText.loadingTimes}</option>}
